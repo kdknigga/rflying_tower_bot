@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "rflying_tower_bot"
+version = "0.1.0"
+description = ""
+authors = ["Kris Knigga <kris@knigga.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asyncpraw = "^7.5.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
+prospector = {extras = ["with_mypy", "with_bandit"], version = "^1.7.7"}
+black = "^22.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
