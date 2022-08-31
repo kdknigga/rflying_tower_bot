@@ -1,6 +1,6 @@
 # rFlyingTower Bot
 
-This bot is being developed to maybe help out the mods at https://www.reddit.com/r/flying/
+This bot is being developed to maybe help out the mods at https://www.reddit.com/r/flying/ one day.
 
 ## Installation
 ### 1. Install `poetry`
