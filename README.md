@@ -32,6 +32,8 @@ $ export SUBREDDIT="the_name_of_a_subreddit_here"
 ### 6. Set up bot config wiki page
 In your subreddit, create a wiki page called `botconfig/rflying_tower_bot`.  This will contain the rules the bot will follow in YAML format.  See example_rules.yaml for an example.
 
+See https://www.reddit.com/wiki/wiki/#wiki_how_to_make_a_new_wiki_page for details on creating a new wiki page.
+
 ### 7. Run
 ```
 $ poetry run python -m rflying_tower_bot
