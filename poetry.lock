@@ -639,7 +639,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xm
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -794,7 +794,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "bc31918733ea2da96884ee77d73569364e3f6bb1240b2513f6c7d1f12643789c"
+content-hash = "59457cfac2391bba66a6230ee10dca21e9dc7f1cfa9bf0bd319e87f127a00ef2"
 
 [metadata.files]
 aiofiles = []
