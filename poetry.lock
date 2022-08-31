@@ -735,6 +735,14 @@ optional = false
 python-versions = ">=3.6,<4.0"
 
 [[package]]
+name = "types-pyyaml"
+version = "6.0.11"
+description = "Typing stubs for PyYAML"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -794,7 +802,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "59457cfac2391bba66a6230ee10dca21e9dc7f1cfa9bf0bd319e87f127a00ef2"
+content-hash = "fc45524324ed63290f96bd30895d5a5334d683046c23b523e8dfe1b850216d0b"
 
 [metadata.files]
 aiofiles = []
@@ -859,6 +867,7 @@ stevedore = []
 toml = []
 tomli = []
 tomlkit = []
+types-pyyaml = []
 typing-extensions = []
 update-checker = []
 urllib3 = []
