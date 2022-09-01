@@ -1,3 +1,5 @@
+import logging
+
 from typing import Dict, List, Optional
 
 from asyncpraw.models import Subreddit  # type: ignore
@@ -32,6 +34,7 @@ async def sync_post_flair(
     ]
     for flair in post_flair_definitions:
         if existing_flair := find_post_flair(flair, existing_flairs):
+            logging.info("Updaing post flair: %s", flair)
             await subreddit.flair.templates.update(
                 template_id=existing_flair["id"],
                 text=flair,
@@ -42,6 +45,7 @@ async def sync_post_flair(
                 fetch=True,
             )
         else:
+            logging.info("Adding post flair: %s", flair)
             await subreddit.flair.link_templates.add(
                 text=flair,
                 css_class=post_flair_definitions[flair]["css_class"],
