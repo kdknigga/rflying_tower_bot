@@ -35,7 +35,7 @@ async def sync_post_flair(
     for flair in post_flair_definitions:
         if existing_flair := find_post_flair(flair, existing_flairs):
             logging.info("Updaing post flair: %s", flair)
-            await subreddit.flair.templates.update(
+            await subreddit.flair.link_templates.update(
                 template_id=existing_flair["id"],
                 text=flair,
                 css_class=post_flair_definitions[flair]["css_class"],
