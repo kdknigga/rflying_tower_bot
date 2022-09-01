@@ -3,15 +3,22 @@ import os
 from typing import Dict, Optional
 
 import yaml
-from asyncpraw import Reddit # type: ignore
-from asyncpraw.models import Subreddit # type: ignore
-from asyncpraw.models.reddit.wikipage import WikiPage # type: ignore
+from asyncpraw import Reddit  # type: ignore
+from asyncpraw.models import Subreddit  # type: ignore
+from asyncpraw.models.reddit.wikipage import WikiPage  # type: ignore
 
 from . import __version__ as bot_version
 
 
 class BotConfig:
+    """General configuration for the bot, as well as a shared asyncpraw.Reddit instance."""
+
     def __init__(self, reddit: Reddit) -> None:
+        """Init a BotConfig instance.
+
+        Args:
+            reddit (Reddit): An instance of asyncpraw.Reddit that will be used to talk to the Reddit API
+        """
         self.log: logging.Logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
         )
@@ -21,6 +28,7 @@ class BotConfig:
         self.rules: Optional[Dict] = None
 
     async def update_rules(self) -> None:
+        """Trigger the bot to fetch rules from the subreddit's wiki."""
         self.log.info("Updating rules from wiki")
         subreddit: Subreddit = await self.reddit.subreddit(self.subreddit_name)
         config_wiki_page: WikiPage = await subreddit.wiki.get_page(self.rules_wiki_page)
@@ -37,7 +45,14 @@ class BotConfig:
 
 
 class PRAWConfig:
+    """Configuration specific to PRAW/AsyncPRAW, including Reddit app secrets and user credentials.  Most are sourced from environment variables."""
+
     def __init__(self) -> None:
+        """Create a PRAWConfig instance.
+
+        Raises:
+            TypeError: Will be thrown if required environment variables are not set.
+        """
         self.log: logging.Logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
         )

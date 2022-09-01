@@ -7,13 +7,26 @@ from .config import BotConfig
 
 
 class ModLog:
+    """A class to react to moderator log events"""
+
     def __init__(self, config: BotConfig) -> None:
+        """Create an instance of ModLog.
+
+        Args:
+            config (BotConfig): See config.BotConfig
+        """
         self.log: logging.Logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
         )
         self.config = config
 
     async def do_action_comment(self, post: Submission, comment: str) -> None:
+        """Create a new comment that is distinguished, stickied, and approved.
+
+        Args:
+            post (Submission): The post on which to comment
+            comment (str): The body of the comment
+        """
         self.log.info("Commenting on %s's post: %s", post.author, post.permalink)
         c: Comment = await post.reply(comment)
         await c.mod.distinguish(sticky=True)
@@ -22,6 +35,12 @@ class ModLog:
     async def do_action_remove_with_reason(
         self, post: Submission, reason_id: Optional[str]
     ) -> None:
+        """Remove a post and maybe send a pre-canned reason to OP.
+
+        Args:
+            post (Submission): The post to remove
+            reason_id (Optional[str]): The (UU?)ID of the pre-canned removal reason.  If None, then no reason is used.
+        """
         if reason_id:
             sub: Subreddit = await self.config.reddit.subreddit(
                 self.config.subreddit_name
@@ -34,12 +53,25 @@ class ModLog:
             await post.mod.remove()
 
     async def do_action_remove(self, post: Submission) -> None:
+        """Remove a post without using a pre-canned reason.
+
+        Args:
+            post (Submission): The post to remove
+        """
         await self.do_action_remove_with_reason(post, reason_id=None)
 
     async def check_post_flair(self, post: Submission) -> None:
+        """Check a post to see if it has actionable flair.
+
+        Args:
+            post (Submission): The post to check
+
+        Raises:
+            NotImplementedError: Thrown if a rule uses an unsupported action
+        """
         if not self.config.rules or "flair_actions" not in self.config.rules:
             return
-        
+
         flair_actions = self.config.rules["flair_actions"]
         if flair_actions and post.link_flair_text in flair_actions.keys():
             self.log.info("Found post with flair: %s", post.link_flair_text)
@@ -63,6 +95,7 @@ class ModLog:
                         await func(post)
 
     async def watch_modlog(self) -> None:
+        """An infinite loop watching for modlog entries and acting on them when they match a rule."""
         subreddit: Subreddit = await self.config.reddit.subreddit(
             self.config.subreddit_name
         )

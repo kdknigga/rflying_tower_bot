@@ -32,6 +32,8 @@ async def main() -> None:
 
         modlog = ModLog(bot_config)
 
+        # The gather here is currently unnessisary, but is here to be ready for when
+        # we want to watch things other than the modlog.
         await asyncio.gather(modlog.watch_modlog())
 
 
