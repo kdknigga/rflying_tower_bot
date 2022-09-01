@@ -5,7 +5,7 @@ description = ""
 authors = ["Kris Knigga <kris@knigga.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 asyncpraw = "^7.5.0"
 PyYAML = "^6.0"
 
