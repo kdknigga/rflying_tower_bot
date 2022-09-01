@@ -46,6 +46,18 @@ flair_actions:
     - comment: |
         Congratulations!  You've been chosen to test out rFlyingTower Bot's commenting capabilities.  You should feel very special.
 
-some_other_set_of_rules: null
+post_flair:
+  'DPE report':
+    css_class: 'dpe-report'
+    background_color: '#d3d6da'
+    text_color: 'dark'
+    mod_only: true
+  
+  'rFlyingTower test flair':
+    css_class: ''
+    background_color: '#ea0027'
+    text_color: 'light'
+    mod_only: true
+
 
 yet_another_set_of_rules: null

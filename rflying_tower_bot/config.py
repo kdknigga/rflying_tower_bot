@@ -8,6 +8,7 @@ from asyncpraw.models import Subreddit  # type: ignore
 from asyncpraw.models.reddit.wikipage import WikiPage  # type: ignore
 
 from . import __version__ as bot_version
+from .post_flair import sync_post_flair
 
 
 class BotConfig:
@@ -42,6 +43,11 @@ class BotConfig:
                 f"```\n{str(e)}\n```\n\n"
                 f"The page was lasted modified by: {config_wiki_page.revision_by}",
             )
+        else:
+            if self.rules and "post_flair" in self.rules:
+                await sync_post_flair(
+                    subreddit=subreddit, post_flair_definitions=self.rules["post_flair"]
+                )
 
 
 class PRAWConfig:
