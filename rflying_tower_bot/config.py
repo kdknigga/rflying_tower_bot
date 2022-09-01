@@ -45,6 +45,7 @@ class BotConfig:
             )
         else:
             if self.rules and "post_flair" in self.rules:
+                self.log.info("Syncing post flair")
                 await sync_post_flair(
                     subreddit=subreddit, post_flair_definitions=self.rules["post_flair"]
                 )
