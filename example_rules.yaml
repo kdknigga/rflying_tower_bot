@@ -4,43 +4,43 @@ flair_actions:
         OP is here asking for help.  Please remember rule 7: Be nice to each other.  Comments that are trolling in nature are not welcome.
 
   'Removed: Rule #1 - Read the FAQ':
-    - remove_with_reason: ccd13f95-7931-4762-88dd-cd72bcde1097
+    - remove_with_reason: 'Rule #1 - Read the FAQ'
 
   'Removed: Rule #1 - Want to become a pilot':
-    - remove_with_reason: 24b55155-7bec-4891-a0b4-675d1bffabf4
+    - remove_with_reason: 'Rule #1 - Want to become a pilot'
 
   'Removed: Rule #3 - Post something to discuss':
-    - remove_with_reason: 9960b0c6-e02c-4f81-a887-f0f79a0707fd
+    - remove_with_reason: 'Rule #3 - Post something to discuss'
 
   'Removed: Rule #2 - Keep it relevant to pilots':
-    - remove_with_reason: 9582207f-6977-4791-8663-516fbcf6a22f
+    - remove_with_reason: 'Rule #2 - Keep it relevant to pilots'
 
   'Removed: Rule #4 - No memes':
-    - remove_with_reason: d4735e01-72c0-42de-8045-0c4b0fcec126
+    - remove_with_reason: 'Rule #4 - No memes'
 
   'Removed: Rule #5 - Cite sources when appropriate':
-    - remove_with_reason: dd7b5ee7-a581-4818-88d8-2a17b5cfb89e
+    - remove_with_reason: 'Rule #5 - Cite sources when appropriate'
 
   'Removed: Rule #7 - Be nice to each other':
-    - remove_with_reason: 571debec-6a8e-4acb-8128-df441050a280
+    - remove_with_reason: 'Rule #7 - Be nice to each other'
 
   'Removed: Rule #8 - No commercial posts':
-    - remove_with_reason: f5c31e11-7f3e-40b2-b173-c20aa906e31b
+    - remove_with_reason: 'Rule #8 - No commercial posts'
 
   'Removed: Rule #2 - Fear of flying':
-    - remove_with_reason: 437ba29e-edbe-4cff-96b2-30d936aa5454
+    - remove_with_reason: 'Fear of flying'
 
   'Removed: Rule #1 - Want to become a pilot':
-    - remove_with_reason: 24b55155-7bec-4891-a0b4-675d1bffabf4
+    - remove_with_reason: 'Want to become a pilot'
 
   'Removed: Rule #1 - Medical question':
-    - remove_with_reason: ec21044f-0840-450e-baa4-38a46de14d6d
+    - remove_with_reason: 'Medical question'
 
   'Removed: Rule #3 - Self Promotion':
-    - remove_with_reason: 8e7dab06-7ca7-4d04-8dbf-90d24fb748eb
+    - remove_with_reason: 'Self-Promotion'
 
   'Removed: Rule #3 - Just Pretty Media':
-    - remove_with_reason: fa96c0f5-c5f6-4240-9006-e54074f12a2b
+    - remove_with_reason: 'Pretty Media With No Discussion Value'
 
   'rFlyingTower test flair':
     - comment: |

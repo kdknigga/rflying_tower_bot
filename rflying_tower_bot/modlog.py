@@ -2,8 +2,10 @@ import logging
 from typing import Dict, Optional
 
 from asyncpraw.models import Comment, Submission, Subreddit  # type: ignore
+from asyncpraw.models.reddit.removal_reasons import RemovalReason  # type: ignore
 
 from .config import BotConfig
+from .removal_reasons import find_removal_reason
 
 
 class ModLog:
@@ -33,21 +35,25 @@ class ModLog:
         await c.mod.approve()
 
     async def do_action_remove_with_reason(
-        self, post: Submission, reason_id: Optional[str]
+        self, post: Submission, reason_title: Optional[str] = None
     ) -> None:
         """Remove a post and maybe send a pre-canned reason to OP.
 
         Args:
             post (Submission): The post to remove
-            reason_id (Optional[str]): The (UU?)ID of the pre-canned removal reason.  If None, then no reason is used.
+            reason_title (Optional[str]): The title of the pre-canned removal reason.  If None, then no reason is used.
         """
-        if reason_id:
+        if reason_title:
             sub: Subreddit = await self.config.reddit.subreddit(
                 self.config.subreddit_name
             )
-            reason = await sub.mod.removal_reasons.get_reason(reason_id)
+            reasons = [reason async for reason in sub.mod.removal_reasons]
+            reason: RemovalReason = find_removal_reason(reason_title, reasons)
             self.log.info("Removing post: %s with reason: %s", post, reason.title)
             await post.mod.remove(reason_id=reason.id)
+            await post.mod.send_removal_message(
+                reason.message, title=reason.title, type="private"
+            )
         else:
             self.log.info("Removing post: %s", post)
             await post.mod.remove()
@@ -58,7 +64,7 @@ class ModLog:
         Args:
             post (Submission): The post to remove
         """
-        await self.do_action_remove_with_reason(post, reason_id=None)
+        await self.do_action_remove_with_reason(post, reason_title=None)
 
     async def check_post_flair(self, post: Submission) -> None:
         """Check a post to see if it has actionable flair.
