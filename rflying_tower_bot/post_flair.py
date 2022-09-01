@@ -40,7 +40,7 @@ async def sync_post_flair(
                 text=flair,
                 css_class=post_flair_definitions[flair]["css_class"],
                 background_color=post_flair_definitions[flair]["background_color"],
-                text_only=post_flair_definitions[flair]["text_only"],
+                text_color=post_flair_definitions[flair]["text_color"],
                 mod_only=post_flair_definitions[flair]["mod_only"],
                 fetch=True,
             )
@@ -50,6 +50,6 @@ async def sync_post_flair(
                 text=flair,
                 css_class=post_flair_definitions[flair]["css_class"],
                 background_color=post_flair_definitions[flair]["background_color"],
-                text_only=post_flair_definitions[flair]["text_only"],
+                text_color=post_flair_definitions[flair]["text_color"],
                 mod_only=post_flair_definitions[flair]["mod_only"],
             )
