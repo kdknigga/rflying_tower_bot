@@ -86,15 +86,15 @@ class ModLog:
             return
 
         flair_actions = self.config.rules.flair_actions
-        if flair_actions and post.link_flair_text in flair_actions.keys():
+        if post.link_flair_text in flair_actions.keys():
             self.log.info("Found post with flair: %s", post.link_flair_text)
             actions = flair_actions[post.link_flair_text]
 
             for action in actions:
                 try:
-                    func = getattr(self, f"do_action_{action}")
+                    func = getattr(self, f"do_action_{action.action}")
                 except AttributeError as e:
-                    raise NotImplementedError(f"Invalid action {action}") from e
+                    raise NotImplementedError(f"Invalid action {action.action}") from e
                 else:
                     if action.argument:
                         await func(post, action.argument)

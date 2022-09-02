@@ -57,6 +57,11 @@ flair_actions:
       argument: |
         Congratulations!  You've been chosen to test out rFlyingTower Bot's commenting capabilities.  You should feel very special.
 
+  'SPAM':
+    - action: comment
+      argument: Go away, you filthy spammer.
+    - action: remove
+
 post_flair:
   'DPE report':
     css_class: 'dpe-report'
@@ -141,6 +146,10 @@ post_flair:
     background_color: '#b8001f'
     text_color: 'dark'
     mod_only: true
+
+  'SPAM':
+    css_class: 'spam'
+    background_color: '#ffff00'
 
 
 yet_another_set_of_rules: null
