@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-import asyncpraw  # type: ignore
+import asyncpraw
 
 from .config import BotConfig, PRAWConfig
 from .modlog import ModLog

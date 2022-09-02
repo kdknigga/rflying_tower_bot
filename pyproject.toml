@@ -7,13 +7,34 @@ authors = ["Kris Knigga <kris@knigga.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 asyncpraw = "^7.5.0"
-PyYAML = "^6.0"
+pydantic-yaml = {extras = ["pyyaml"], version = "^0.8.0"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
 prospector = {extras = ["with_mypy", "with_bandit"], version = "^1.7.7"}
 black = "^22.6.0"
 types-PyYAML = "^6.0.11"
+
+[tool.mypy]
+plugins = [
+  "pydantic.mypy"
+]
+follow_imports = "silent"
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+
+[[tool.mypy.overrides]]
+module = 'asyncpraw.*'
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

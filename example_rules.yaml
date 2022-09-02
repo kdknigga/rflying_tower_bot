@@ -1,49 +1,60 @@
 flair_actions:
   'DPE report':
-    - comment: |
+    - action: comment
+      argument: |
         OP is here asking for help.  Please remember rule 7: Be nice to each other.  Comments that are trolling in nature are not welcome.
 
   'Removed: Rule #1 - Read the FAQ':
-    - remove_with_reason: 'Rule #1 - Read the FAQ'
+    - action: remove_with_reason
+      argument: 'Rule #1 - Read the FAQ'
 
   'Removed: Rule #1 - Want to become a pilot':
-    - remove_with_reason: 'Rule #1 - Want to become a pilot'
-
-  'Removed: Rule #3 - Post something to discuss':
-    - remove_with_reason: 'Rule #3 - Post something to discuss'
-
-  'Removed: Rule #2 - Keep it relevant to pilots':
-    - remove_with_reason: 'Rule #2 - Keep it relevant to pilots'
-
-  'Removed: Rule #4 - No memes':
-    - remove_with_reason: 'Rule #4 - No memes'
-
-  'Removed: Rule #5 - Cite sources when appropriate':
-    - remove_with_reason: 'Rule #5 - Cite sources when appropriate'
-
-  'Removed: Rule #7 - Be nice to each other':
-    - remove_with_reason: 'Rule #7 - Be nice to each other'
-
-  'Removed: Rule #8 - No commercial posts':
-    - remove_with_reason: 'Rule #8 - No commercial posts'
-
-  'Removed: Rule #2 - Fear of flying':
-    - remove_with_reason: 'Fear of flying'
-
-  'Removed: Rule #1 - Want to become a pilot':
-    - remove_with_reason: 'Want to become a pilot'
+    - action: remove_with_reason
+      argument: 'Want to become a pilot'
 
   'Removed: Rule #1 - Medical question':
-    - remove_with_reason: 'Medical question'
+    - action: remove_with_reason
+      argument: 'Medical question'
+
+  'Removed: Rule #2 - Keep it relevant to pilots':
+    - action: remove_with_reason
+      argument: 'Rule #2 - Keep it relevant to pilots'
+
+  'Removed: Rule #2 - Fear of flying':
+    - action: remove_with_reason
+      argument: 'Fear of flying'
+
+  'Removed: Rule #3 - Post something to discuss':
+    - action: remove_with_reason
+      argument: 'Rule #3 - Post something to discuss'
 
   'Removed: Rule #3 - Self Promotion':
-    - remove_with_reason: 'Self-Promotion'
+    - action: remove_with_reason
+      argument: 'Self-Promotion'
 
   'Removed: Rule #3 - Just Pretty Media':
-    - remove_with_reason: 'Pretty Media With No Discussion Value'
+    - action: remove_with_reason
+      argument: 'Pretty Media With No Discussion Value'
+
+  'Removed: Rule #4 - No memes':
+    - action: remove_with_reason
+      argument: 'Rule #4 - No memes'
+
+  'Removed: Rule #5 - Cite sources when appropriate':
+    - action: remove_with_reason
+      argument: 'Rule #5 - Cite sources when appropriate'
+
+  'Removed: Rule #7 - Be nice to each other':
+    - action: remove_with_reason
+      argument: 'Rule #7 - Be nice to each other'
+
+  'Removed: Rule #8 - No commercial posts':
+    - action: remove_with_reason
+      argument: 'Rule #8 - No commercial posts'
 
   'rFlyingTower test flair':
-    - comment: |
+    - action: comment
+      argument: |
         Congratulations!  You've been chosen to test out rFlyingTower Bot's commenting capabilities.  You should feel very special.
 
 post_flair:
@@ -71,13 +82,37 @@ post_flair:
     text_color: 'dark'
     mod_only: true
 
-  'Removed: Rule #3 - Post something to discuss':
+  'Removed: Rule #1 - Medical question':
     css_class: 'rule-removal'
     background_color: '#b8001f'
     text_color: 'dark'
     mod_only: true
 
   'Removed: Rule #2 - Keep it relevant to pilots':
+    css_class: 'rule-removal'
+    background_color: '#b8001f'
+    text_color: 'dark'
+    mod_only: true
+
+  'Removed: Rule #2 - Fear of flying':
+    css_class: 'rule-removal'
+    background_color: '#b8001f'
+    text_color: 'dark'
+    mod_only: true
+
+  'Removed: Rule #3 - Post something to discuss':
+    css_class: 'rule-removal'
+    background_color: '#b8001f'
+    text_color: 'dark'
+    mod_only: true
+
+  'Removed: Rule #3 - Self Promotion':
+    css_class: 'rule-removal'
+    background_color: '#b8001f'
+    text_color: 'dark'
+    mod_only: true
+
+  'Removed: Rule #3 - Just Pretty Media':
     css_class: 'rule-removal'
     background_color: '#b8001f'
     text_color: 'dark'
@@ -102,36 +137,6 @@ post_flair:
     mod_only: true
 
   'Removed: Rule #8 - No commercial posts':
-    css_class: 'rule-removal'
-    background_color: '#b8001f'
-    text_color: 'dark'
-    mod_only: true
-
-  'Removed: Rule #2 - Fear of flying':
-    css_class: 'rule-removal'
-    background_color: '#b8001f'
-    text_color: 'dark'
-    mod_only: true
-
-  'Removed: Rule #1 - Want to become a pilot':
-    css_class: 'rule-removal'
-    background_color: '#b8001f'
-    text_color: 'dark'
-    mod_only: true
-
-  'Removed: Rule #1 - Medical question':
-    css_class: 'rule-removal'
-    background_color: '#b8001f'
-    text_color: 'dark'
-    mod_only: true
-
-  'Removed: Rule #3 - Self Promotion':
-    css_class: 'rule-removal'
-    background_color: '#b8001f'
-    text_color: 'dark'
-    mod_only: true
-
-  'Removed: Rule #3 - Just Pretty Media':
     css_class: 'rule-removal'
     background_color: '#b8001f'
     text_color: 'dark'

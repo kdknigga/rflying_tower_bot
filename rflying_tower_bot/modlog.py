@@ -1,11 +1,10 @@
 import logging
-from typing import Dict, Optional
+from typing import Optional
 
-from asyncpraw.models import Comment, Submission, Subreddit  # type: ignore
-from asyncpraw.models.reddit.removal_reasons import RemovalReason  # type: ignore
+from asyncpraw.models import Comment, Submission, Subreddit
+from asyncpraw.models.reddit.removal_reasons import RemovalReason
 
-from .config import BotConfig
-from .removal_reasons import find_removal_reason
+from .config import BotConfig, find_removal_reason
 
 
 class ModLog:
@@ -48,7 +47,15 @@ class ModLog:
                 self.config.subreddit_name
             )
             reasons = [reason async for reason in sub.mod.removal_reasons]
-            reason: RemovalReason = find_removal_reason(reason_title, reasons)
+            reason: Optional[RemovalReason] = find_removal_reason(reason_title, reasons)
+            if not reason:
+                self.log.error("Invalid removal reason: %sl", reason_title)
+                await post.subreddit.message(
+                    subject="rFlyingTower Bot Config Error",
+                    message=f"While trying to remove the post {post:!}, the reason {reason_title:!} was given.\n\n"
+                    f"However, no removal reason with the title {reason_title:!} could be found.",
+                )
+                return
             self.log.info("Removing post: %s with reason: %s", post, reason.title)
             await post.mod.remove(reason_id=reason.id)
             await post.mod.send_removal_message(
@@ -75,28 +82,22 @@ class ModLog:
         Raises:
             NotImplementedError: Thrown if a rule uses an unsupported action
         """
-        if not self.config.rules or "flair_actions" not in self.config.rules:
+        if not self.config.rules:
             return
 
-        flair_actions = self.config.rules["flair_actions"]
+        flair_actions = self.config.rules.flair_actions
         if flair_actions and post.link_flair_text in flair_actions.keys():
             self.log.info("Found post with flair: %s", post.link_flair_text)
             actions = flair_actions[post.link_flair_text]
 
-            for a in actions:
-                if isinstance(a, Dict):
-                    for action, args in a.items():
-                        try:
-                            func = getattr(self, f"do_action_{action}")
-                        except AttributeError as e:
-                            raise NotImplementedError(f"Invalid action {action}") from e
-                        else:
-                            await func(post, args)
-                elif isinstance(a, str):
-                    try:
-                        func = getattr(self, f"do_action_{a}")
-                    except AttributeError as e:
-                        raise NotImplementedError(f"Invalid action {a}") from e
+            for action in actions:
+                try:
+                    func = getattr(self, f"do_action_{action}")
+                except AttributeError as e:
+                    raise NotImplementedError(f"Invalid action {action}") from e
+                else:
+                    if action.argument:
+                        await func(post, action.argument)
                     else:
                         await func(post)
 
