@@ -37,4 +37,7 @@ async def main() -> None:
         await asyncio.gather(modlog.watch_modlog())
 
 
-asyncio.run(main())
+try:
+    asyncio.run(main())
+except KeyboardInterrupt:
+    pass

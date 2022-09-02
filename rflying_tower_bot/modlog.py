@@ -4,7 +4,8 @@ from typing import Optional
 from asyncpraw.models import Comment, Submission, Subreddit
 from asyncpraw.models.reddit.removal_reasons import RemovalReason
 
-from .config import BotConfig, find_removal_reason
+from .config import BotConfig
+from .utilities import find_removal_reason
 
 
 class ModLog:
@@ -29,7 +30,10 @@ class ModLog:
             comment (str): The body of the comment
         """
         self.log.info("Commenting on %s's post: %s", post.author, post.permalink)
-        c: Comment = await post.reply(comment)
+        c: Optional[Comment] = await post.reply(comment)
+        if not c:
+            self.log.error("Making comment on %s seems to have failed", str(post))
+            return
         await c.mod.distinguish(sticky=True)
         await c.mod.approve()
 
