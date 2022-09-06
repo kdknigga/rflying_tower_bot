@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, root_validator
 from pydantic_yaml import YamlModel
@@ -28,11 +28,24 @@ class FlairAction(BaseModel):
 
 class PostFlairSettings(BaseModel):
     css_class: str = ""
-    background_color: str = ""
-    text_color: str = ""
+    background_color: str = "#dadada"
+    text_color: str = "dark"
     mod_only: bool = True
+    id: Optional[str]
+
+    class Config:
+        fields = {"id": {"exclude": True}}
+
+
+class RemovalReasonSettings(BaseModel):
+    message: str
+    id: Optional[str]
+
+    class Config:
+        fields = {"id": {"exclude": True}}
 
 
 class Ruleset(YamlModel):
-    flair_actions: Dict[str, List[FlairAction]]
-    post_flair: Dict[str, PostFlairSettings]
+    flair_actions: Optional[Dict[str, List[FlairAction]]]
+    post_flair: Optional[Dict[str, PostFlairSettings]]
+    removal_reasons: Optional[Dict[str, RemovalReasonSettings]]

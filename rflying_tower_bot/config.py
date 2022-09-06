@@ -8,7 +8,7 @@ from asyncpraw.models.reddit.wikipage import WikiPage
 
 from . import __version__ as bot_version
 from .ruleset_schemas import Ruleset
-from .utilities import sync_post_flair
+from .utilities import sync_post_flair, sync_removal_reasons
 
 
 class BotConfig:
@@ -44,10 +44,17 @@ class BotConfig:
                 f"The page was lasted modified by: {config_wiki_page.revision_by}",
             )
         else:
-            if self.rules:
+            if not self.rules:
+                return
+            if self.rules.post_flair:
                 self.log.info("Syncing post flair")
                 await sync_post_flair(
-                    subreddit=subreddit, post_flair_definitions=self.rules.post_flair
+                    subreddit=subreddit, pf_rules=self.rules.post_flair
+                )
+            if self.rules.removal_reasons:
+                self.log.info("Syncing removal reasons")
+                await sync_removal_reasons(
+                    subreddit=subreddit, rr_rules=self.rules.removal_reasons
                 )
 
 

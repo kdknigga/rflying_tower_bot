@@ -1,11 +1,12 @@
 import logging
-from typing import Optional
+from typing import Dict, Optional
 
 from asyncpraw.models import Comment, Submission, Subreddit
-from asyncpraw.models.reddit.removal_reasons import RemovalReason
+
+from rflying_tower_bot.ruleset_schemas import RemovalReasonSettings
 
 from .config import BotConfig
-from .utilities import find_removal_reason
+from .utilities import get_current_removal_reasons
 
 
 class ModLog:
@@ -50,9 +51,10 @@ class ModLog:
             sub: Subreddit = await self.config.reddit.subreddit(
                 self.config.subreddit_name
             )
-            reasons = [reason async for reason in sub.mod.removal_reasons]
-            reason: Optional[RemovalReason] = find_removal_reason(reason_title, reasons)
-            if not reason:
+            reasons: Dict[
+                str, RemovalReasonSettings
+            ] = await get_current_removal_reasons(sub)
+            if reason_title not in reasons:
                 self.log.error("Invalid removal reason: %sl", reason_title)
                 await post.subreddit.message(
                     subject="rFlyingTower Bot Config Error",
@@ -60,10 +62,10 @@ class ModLog:
                     f"However, no removal reason with the title {reason_title:!} could be found.",
                 )
                 return
-            self.log.info("Removing post: %s with reason: %s", post, reason.title)
-            await post.mod.remove(reason_id=reason.id)
+            self.log.info("Removing post: %s with reason: %s", post, reason_title)
+            await post.mod.remove(reason_id=reasons[reason_title].id)
             await post.mod.send_removal_message(
-                reason.message, title=reason.title, type="private"
+                reasons[reason_title].message, title=reason_title, type="private"
             )
         else:
             self.log.info("Removing post: %s", post)
@@ -86,13 +88,13 @@ class ModLog:
         Raises:
             NotImplementedError: Thrown if a rule uses an unsupported action
         """
-        if not self.config.rules:
+        if not self.config.rules or not self.config.rules.flair_actions:
+            self.log.warning("No flair actions defined in the ruleset")
             return
 
-        flair_actions = self.config.rules.flair_actions
-        if post.link_flair_text in flair_actions.keys():
+        if post.link_flair_text in self.config.rules.flair_actions:
             self.log.info("Found post with flair: %s", post.link_flair_text)
-            actions = flair_actions[post.link_flair_text]
+            actions = self.config.rules.flair_actions[post.link_flair_text]
 
             for action in actions:
                 try:
@@ -112,7 +114,7 @@ class ModLog:
         )
         self.log.info("Starting watch of %s's mod log", subreddit)
         async for modlog_entry in subreddit.mod.stream.log(skip_existing=True):
-            self.log.info(
+            self.log.debug(
                 "Found new modlog entry: %s did %s (%s) to target %s",
                 modlog_entry.mod,
                 modlog_entry.action,

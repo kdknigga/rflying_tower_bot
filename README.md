@@ -38,3 +38,14 @@ See https://www.reddit.com/wiki/wiki/#wiki_how_to_make_a_new_wiki_page for detai
 ```
 $ poetry run python -m rflying_tower_bot
 ```
+
+## Notes
+* The user running the bot will need the following moderator permissions:
+    * Manage Posts & Comments
+        * To use removal reasons
+    * Manage Mod Mail
+        * To use removal reasons
+    * Manage Flair
+        * To add post flair templates
+    * Manage Wiki Pages
+        * To access the config wiki page
