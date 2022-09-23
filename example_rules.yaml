@@ -15,7 +15,7 @@ flair_actions:
       argument: Go away, you filthy spammer.
     - action: remove
 
-  # This is the third rule.  It's action is "remove_with_reason" which sends a pre-canned removal reason to OP.
+  # This is the third rule.  Its action is "remove_with_reason" which sends a pre-canned removal reason to OP.
   # The argument to "remove_with_reason" is the title of the removal reason.
   'Removed: Rule #1 - Read the FAQ':
     - action: remove_with_reason
