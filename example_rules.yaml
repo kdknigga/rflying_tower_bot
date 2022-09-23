@@ -2,7 +2,7 @@
 flair_actions:
   # This is the start of a rule.  This will trigger when a post is given the flair "DPE report"
   'DPE report':
-    # This rule has one action, which is "comment".  This will place a distingished, stickied comment on the post with the contents of "argument".
+    # This rule has one action, which is "comment".  This will place a distinguished, stickied comment on the post with the contents of "argument".
     - action: comment
       argument: |
         OP is here asking for help.  Please remember rule 7: Be nice to each other.  Comments that are trolling in nature are not welcome.

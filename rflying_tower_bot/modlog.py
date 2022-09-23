@@ -5,8 +5,8 @@ from asyncpraw.models import Comment, Submission, Subreddit
 
 from rflying_tower_bot.ruleset_schemas import RemovalReasonSettings
 
-from .config import BotConfig
-from .utilities import get_current_removal_reasons
+from .config import BotConfig, get_current_removal_reasons
+from .utilities import Utilities
 
 
 class ModLog:
@@ -22,6 +22,7 @@ class ModLog:
             f"{__name__}.{self.__class__.__name__}"
         )
         self.config = config
+        self.utilities = Utilities(config)
 
     async def do_action_comment(self, post: Submission, comment: str) -> None:
         """Create a new comment that is distinguished, stickied, and approved.
@@ -31,7 +32,7 @@ class ModLog:
             comment (str): The body of the comment
         """
         self.log.info("Commenting on %s's post: %s", post.author, post.permalink)
-        c: Optional[Comment] = await post.reply(comment)
+        c: Optional[Comment] = await post.reply(self.utilities.format_comment(comment))
         if not c:
             self.log.error("Making comment on %s seems to have failed", str(post))
             return
