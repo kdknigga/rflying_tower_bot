@@ -1,4 +1,5 @@
 import logging
+
 from .config import BotConfig
 
 log: logging.Logger = logging.getLogger(__name__)

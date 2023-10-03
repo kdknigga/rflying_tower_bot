@@ -43,14 +43,14 @@ post_flair:
     background_color: '#d3d6da'
     text_color: 'dark'
     mod_only: true
-  
+
   # Another post flair template
   'rFlyingTower test flair':
     css_class: ''
     background_color: '#ea0027'
     text_color: 'light'
     mod_only: true
-  
+
   # More post flair templates follow
   'Removed: Rule #1 - Read the FAQ':
     css_class: 'rule-removal'
