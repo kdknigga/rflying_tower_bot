@@ -15,6 +15,9 @@ prospector = {extras = ["with_mypy", "with_bandit"], version = "^1.7.7"}
 black = "^22.6.0"
 types-PyYAML = "^6.0.11"
 
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.4.0"
+
 [tool.mypy]
 plugins = [
   "pydantic.mypy"
