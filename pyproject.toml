@@ -12,7 +12,7 @@ pydantic-yaml = {extras = ["pyyaml"], version = "^0.8.0"}
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
 prospector = {extras = ["with_mypy", "with_bandit"], version = "^1.7.7"}
-black = "^22.6.0"
+black = "^24.3.0"
 types-PyYAML = "^6.0.11"
 
 [tool.poetry.group.dev.dependencies]
