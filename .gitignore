@@ -232,4 +232,4 @@ pip-selfcheck.json
 # Ignore code-workspaces
 *.code-workspace
 
-environment.sh
+environment_*.sh
