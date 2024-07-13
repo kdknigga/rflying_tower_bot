@@ -7,6 +7,7 @@ import asyncpraw
 
 from rflying_tower_bot.config import BotConfig, PRAWConfig
 from rflying_tower_bot.modlog import ModLog
+from rflying_tower_bot.post_stream import PostStream
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -34,10 +35,9 @@ async def main() -> None:
         await bot_config.update_rules()
 
         modlog = ModLog(bot_config)
+        post_stream = PostStream(bot_config)
 
-        # The gather here is currently unnessisary, but is here to be ready for when
-        # we want to watch things other than the modlog.
-        await asyncio.gather(modlog.watch_modlog())
+        await asyncio.gather(modlog.watch_modlog(), post_stream.watch_poststream())
 
 
 try:
