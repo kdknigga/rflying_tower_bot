@@ -1,6 +1,7 @@
+"""Configuration management, including for the bot in general and rules stored in the subreddit's wiki."""
+
 import logging
 import os
-from typing import Dict, Optional
 
 from asyncpraw import Reddit
 from asyncpraw.models import Subreddit
@@ -25,10 +26,13 @@ class BotConfig:
     """General configuration for the bot, as well as a shared asyncpraw.Reddit instance."""
 
     def __init__(self, reddit: Reddit) -> None:
-        """Init a BotConfig instance.
+        """
+        Init a BotConfig instance.
 
         Args:
+        ----
             reddit (Reddit): An instance of asyncpraw.Reddit that will be used to talk to the Reddit API
+
         """
         self.log: logging.Logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
@@ -36,7 +40,7 @@ class BotConfig:
         self.reddit: Reddit = reddit
         self.subreddit_name: str = os.getenv("SUBREDDIT", "flying")
         self.rules_wiki_page = "botconfig/rflying_tower_bot"
-        self.rules: Optional[Ruleset] = None
+        self.rules: Ruleset | None = None
 
     async def update_rules(self) -> None:
         """Trigger the bot to fetch rules from the subreddit's wiki."""
@@ -72,20 +76,23 @@ class PRAWConfig:
     """Configuration specific to PRAW/AsyncPRAW, including Reddit app secrets and user credentials.  Most are sourced from environment variables."""
 
     def __init__(self) -> None:
-        """Create a PRAWConfig instance.
+        """
+        Create a PRAWConfig instance.
 
-        Raises:
+        Raises
+        ------
             TypeError: Will be thrown if required environment variables are not set.
+
         """
         self.log: logging.Logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
         )
 
-        self.client_id: Optional[str] = os.getenv("PRAW_CLIENT_ID")
+        self.client_id: str | None = os.getenv("PRAW_CLIENT_ID")
         if self.client_id is None:
             raise TypeError("Environment variable PRAW_CLIENT_ID is not set")
 
-        self.client_secret: Optional[str] = os.getenv("PRAW_CLIENT_SECRET")
+        self.client_secret: str | None = os.getenv("PRAW_CLIENT_SECRET")
         if self.client_secret is None:
             raise TypeError("Environment variable PRAW_CLIENT_SECRET is not set")
 
@@ -96,19 +103,23 @@ class PRAWConfig:
 
         self.username: str = os.getenv("PRAW_USERNAME", "rFlyingTower")
 
-        self.password: Optional[str] = os.getenv("PRAW_PASSWORD")
+        self.password: str | None = os.getenv("PRAW_PASSWORD")
         if self.client_secret is None:
             raise TypeError("Environment variable PRAW_PASSWORD is not set")
 
 
-async def get_current_post_flair(subreddit: Subreddit) -> Dict[str, PostFlairSettings]:
-    """Get the post flair currently defined in a subreddit
+async def get_current_post_flair(subreddit: Subreddit) -> dict[str, PostFlairSettings]:
+    """
+    Get the post flair currently defined in a subreddit.
 
     Args:
-        subreddit (Subreddit)
+    ----
+        subreddit (Subreddit): The subreddit being moderated
 
     Returns:
+    -------
         Dict[str, PostFlairSettings]: Dict with keys being flair titles and values being PostFlairSettings
+
     """
     return {
         flair["text"]: PostFlairSettings.parse_obj(flair)
@@ -118,14 +129,18 @@ async def get_current_post_flair(subreddit: Subreddit) -> Dict[str, PostFlairSet
 
 async def get_current_removal_reasons(
     subreddit: Subreddit,
-) -> Dict[str, RemovalReasonSettings]:
-    """Get the removal reasons currently defined in a subreddit
+) -> dict[str, RemovalReasonSettings]:
+    """
+    Get the removal reasons currently defined in a subreddit.
 
     Args:
-        subreddit (Subreddit)
+    ----
+        subreddit (Subreddit): The subreddit being moderated
 
     Returns:
+    -------
         Dict[str, RemovalReasonSettings]: Dict with keys being removal reason titles and values being RemovalReasonSettings
+
     """
     return {
         reason.title: RemovalReasonSettings.parse_obj(reason.__dict__)
@@ -134,15 +149,18 @@ async def get_current_removal_reasons(
 
 
 async def sync_removal_reasons(
-    subreddit: Subreddit, rr_rules: Dict[str, RemovalReasonSettings]
+    subreddit: Subreddit, rr_rules: dict[str, RemovalReasonSettings]
 ) -> None:
-    """Synchronize sub removal reasons with what's defined in the "removal_reasons" section of the rules file.  Adds or updates only, doesn't delete.
+    """
+    Synchronize sub removal reasons with what's defined in the "removal_reasons" section of the rules file.  Adds or updates only, doesn't delete.
 
     Args:
+    ----
         subreddit (Subreddit): The subreddit in which to act
         rr_rules (Dict[str, RemovalReasonSettings]): The removal reasons section of the rules file
+
     """
-    existing_reasons: Dict[
+    existing_reasons: dict[
         str, RemovalReasonSettings
     ] = await get_current_removal_reasons(subreddit)
 
@@ -169,16 +187,18 @@ async def sync_removal_reasons(
 
 
 async def sync_post_flair(
-    subreddit: Subreddit, pf_rules: Dict[str, PostFlairSettings]
+    subreddit: Subreddit, pf_rules: dict[str, PostFlairSettings]
 ) -> None:
-    """Synchronize sub post flair with what's defined in the "post_flair" section of the rules file.  Adds or updates only, doesn't delete.
+    """
+    Synchronize sub post flair with what's defined in the "post_flair" section of the rules file.  Adds or updates only, doesn't delete.
 
     Args:
+    ----
         subreddit (Subreddit): The subreddit in which to act
         pf_rules (Dict[str, PostFlairSettings]): The post flair section of the rules file
-    """
 
-    existing_flairs: Dict[str, PostFlairSettings] = await get_current_post_flair(
+    """
+    existing_flairs: dict[str, PostFlairSettings] = await get_current_post_flair(
         subreddit
     )
 
@@ -212,11 +232,14 @@ async def sync_post_flair(
 
 
 async def dump_current_settings(subreddit: Subreddit, output_file: str) -> None:
-    """Dump a subreddit's current post flair and removal reasons to a file in yaml format.
+    """
+    Dump a subreddit's current post flair and removal reasons to a file in yaml format.
 
     Args:
+    ----
         subreddit (Subreddit): The subreddit to read from
         output_file (str): The file to write to
+
     """
     ruleset = Ruleset(flair_actions=None, post_flair=None, removal_reasons=None)
 
@@ -224,5 +247,5 @@ async def dump_current_settings(subreddit: Subreddit, output_file: str) -> None:
 
     ruleset.removal_reasons = await get_current_removal_reasons(subreddit)
 
-    with open(output_file, "wt", encoding="utf-8") as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(to_yaml_str(ruleset))

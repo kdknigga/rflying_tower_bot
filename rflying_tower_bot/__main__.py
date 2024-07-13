@@ -1,3 +1,5 @@
+"""The main entry point for the bot."""
+
 import asyncio
 import logging
 
@@ -16,6 +18,7 @@ praw_config = PRAWConfig()
 
 
 async def main() -> None:
+    """Initialize the bot, grab the rules, and start any event loops."""
     async with asyncpraw.Reddit(
         client_id=praw_config.client_id,
         client_secret=praw_config.client_secret,

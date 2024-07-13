@@ -1,5 +1,6 @@
+"""A module to react to moderator log events."""
+
 import logging
-from typing import Dict, Optional
 
 from asyncpraw.models import Comment, Submission, Subreddit
 
@@ -9,13 +10,16 @@ from rflying_tower_bot.utilities import Utilities
 
 
 class ModLog:
-    """A class to react to moderator log events"""
+    """A class to react to moderator log events."""
 
     def __init__(self, config: BotConfig) -> None:
-        """Create an instance of ModLog.
+        """
+        Create an instance of ModLog.
 
         Args:
+        ----
             config (BotConfig): See config.BotConfig
+
         """
         self.log: logging.Logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
@@ -24,14 +28,17 @@ class ModLog:
         self.utilities = Utilities(config)
 
     async def do_action_comment(self, post: Submission, comment: str) -> None:
-        """Create a new comment that is distinguished, stickied, and approved.
+        """
+        Create a new comment that is distinguished, stickied, and approved.
 
         Args:
+        ----
             post (Submission): The post on which to comment
             comment (str): The body of the comment
+
         """
         self.log.info("Commenting on %s's post: %s", post.author, post.permalink)
-        c: Optional[Comment] = await post.reply(self.utilities.format_comment(comment))
+        c: Comment | None = await post.reply(self.utilities.format_comment(comment))
         if not c:
             self.log.error("Making comment on %s seems to have failed", str(post))
             return
@@ -39,19 +46,22 @@ class ModLog:
         await c.mod.approve()
 
     async def do_action_remove_with_reason(
-        self, post: Submission, reason_title: Optional[str] = None
+        self, post: Submission, reason_title: str | None = None
     ) -> None:
-        """Remove a post and maybe send a pre-canned reason to OP.
+        """
+        Remove a post and maybe send a pre-canned reason to OP.
 
         Args:
+        ----
             post (Submission): The post to remove
             reason_title (Optional[str]): The title of the pre-canned removal reason.  If None, then no reason is used.
+
         """
         if reason_title:
             sub: Subreddit = await self.config.reddit.subreddit(
                 self.config.subreddit_name
             )
-            reasons: Dict[
+            reasons: dict[
                 str, RemovalReasonSettings
             ] = await get_current_removal_reasons(sub)
             if reason_title not in reasons:
@@ -72,21 +82,28 @@ class ModLog:
             await post.mod.remove()
 
     async def do_action_remove(self, post: Submission) -> None:
-        """Remove a post without using a pre-canned reason.
+        """
+        Remove a post without using a pre-canned reason.
 
         Args:
+        ----
             post (Submission): The post to remove
+
         """
         await self.do_action_remove_with_reason(post, reason_title=None)
 
     async def check_post_flair(self, post: Submission) -> None:
-        """Check a post to see if it has actionable flair.
+        """
+        Check a post to see if it has actionable flair.
 
         Args:
+        ----
             post (Submission): The post to check
 
         Raises:
+        ------
             NotImplementedError: Thrown if a rule uses an unsupported action
+
         """
         if not self.config.rules or not self.config.rules.flair_actions:
             self.log.warning("No flair actions defined in the ruleset")
@@ -108,7 +125,7 @@ class ModLog:
                         await func(post)
 
     async def watch_modlog(self) -> None:
-        """An infinite loop watching for modlog entries and acting on them when they match a rule."""
+        """Watch for modlog entries and act on them when they match a rule, in an infinite loop."""
         subreddit: Subreddit = await self.config.reddit.subreddit(
             self.config.subreddit_name
         )

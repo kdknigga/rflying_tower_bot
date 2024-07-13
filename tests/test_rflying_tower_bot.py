@@ -1,5 +1,8 @@
+"""Module to test the rflying_tower_bot package."""
+
 from rflying_tower_bot import __version__
 
 
 def test_version():
-    assert __version__ == "0.1.0"
+    """Test the version of the rflying_tower_bot package."""
+    assert __version__ == "0.2.0"
