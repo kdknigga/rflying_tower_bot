@@ -3,8 +3,8 @@ import logging
 
 import asyncpraw
 
-from .config import BotConfig, PRAWConfig
-from .modlog import ModLog
+from rflying_tower_bot.config import BotConfig, PRAWConfig
+from rflying_tower_bot.modlog import ModLog
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO

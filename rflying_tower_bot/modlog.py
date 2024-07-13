@@ -3,10 +3,9 @@ from typing import Dict, Optional
 
 from asyncpraw.models import Comment, Submission, Subreddit
 
+from rflying_tower_bot.config import BotConfig, get_current_removal_reasons
 from rflying_tower_bot.ruleset_schemas import RemovalReasonSettings
-
-from .config import BotConfig, get_current_removal_reasons
-from .utilities import Utilities
+from rflying_tower_bot.utilities import Utilities
 
 
 class ModLog:

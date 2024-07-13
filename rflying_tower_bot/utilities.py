@@ -1,6 +1,6 @@
 import logging
 
-from .config import BotConfig
+from rflying_tower_bot.config import BotConfig
 
 log: logging.Logger = logging.getLogger(__name__)
 

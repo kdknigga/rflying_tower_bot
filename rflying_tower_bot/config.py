@@ -6,11 +6,19 @@ from asyncpraw import Reddit
 from asyncpraw.models import Subreddit
 from asyncpraw.models.reddit.removal_reasons import RemovalReason
 from asyncpraw.models.reddit.wikipage import WikiPage
+from dotenv import load_dotenv
+from pydantic_yaml import parse_yaml_raw_as, to_yaml_str  # type: ignore
 
-from . import __version__ as bot_version
-from .ruleset_schemas import PostFlairSettings, RemovalReasonSettings, Ruleset
+from rflying_tower_bot import __version__ as bot_version
+from rflying_tower_bot.ruleset_schemas import (
+    PostFlairSettings,
+    RemovalReasonSettings,
+    Ruleset,
+)
 
 log: logging.Logger = logging.getLogger(__name__)
+
+load_dotenv()
 
 
 class BotConfig:
@@ -36,7 +44,7 @@ class BotConfig:
         subreddit: Subreddit = await self.reddit.subreddit(self.subreddit_name)
         config_wiki_page: WikiPage = await subreddit.wiki.get_page(self.rules_wiki_page)
         try:
-            self.rules = Ruleset.parse_raw(config_wiki_page.content_md)
+            self.rules = parse_yaml_raw_as(Ruleset, config_wiki_page.content_md)
         except Exception as e:
             self.log.error("Error loading rules from wiki: %s", str(e))
             await subreddit.message(
@@ -217,4 +225,4 @@ async def dump_current_settings(subreddit: Subreddit, output_file: str) -> None:
     ruleset.removal_reasons = await get_current_removal_reasons(subreddit)
 
     with open(output_file, "wt", encoding="utf-8") as f:
-        f.write(ruleset.yaml())
+        f.write(to_yaml_str(ruleset))
