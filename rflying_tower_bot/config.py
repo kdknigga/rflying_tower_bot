@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from pydantic_yaml import parse_yaml_raw_as, to_yaml_str  # type: ignore
 
 from rflying_tower_bot import __version__ as bot_version
+from rflying_tower_bot.history import History
 from rflying_tower_bot.ruleset_schemas import (
     PostFlairSettings,
     RemovalReasonSettings,
@@ -41,6 +42,9 @@ class BotConfig:
         self.subreddit_name: str = os.getenv("SUBREDDIT", "flying")
         self.rules_wiki_page = "botconfig/rflying_tower_bot"
         self.rules: Ruleset | None = None
+        self.history = History(
+            os.getenv("DB_CONNECTION_STRING", "sqlite+aiosqlite:///:memory:")
+        )
 
     async def update_rules(self) -> None:
         """Trigger the bot to fetch rules from the subreddit's wiki."""

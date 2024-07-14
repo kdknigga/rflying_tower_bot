@@ -33,6 +33,10 @@ class PostStream:
         )
         self.log.info("Watching the post stream for new posts in %s", subreddit)
         async for post in subreddit.stream.submissions():
+            if await self.config.history.check(post.permalink, "save_post_body") > 0:
+                self.log.info("Skipping post %s, already processed", post.permalink)
+                continue
+
             self.log.info("New post from %s: %s", post.author, post.permalink)
             if post.selftext != "":
                 comment_text = f"This is a copy of the original post body for posterity:\n\n --- \n{post.selftext}"
@@ -45,6 +49,7 @@ class PostStream:
                     )
                     return
                 await c.mod.distinguish(sticky=False)
+                await self.config.history.add(post.permalink, "save_post_body")
                 self.log.info(
                     "Comment created with post body for posterity: %s", c.permalink
                 )

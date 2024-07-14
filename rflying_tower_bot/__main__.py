@@ -32,6 +32,8 @@ async def main() -> None:
     ) as reddit:
         bot_config = BotConfig(reddit)
 
+        await bot_config.history.initialize_db()
+
         await bot_config.update_rules()
 
         modlog = ModLog(bot_config)
