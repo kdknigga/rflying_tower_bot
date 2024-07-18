@@ -3,6 +3,7 @@
 import logging
 import os
 
+import sentry_sdk
 from asyncpraw import Reddit
 from asyncpraw.models import Subreddit
 from asyncpraw.models.reddit.removal_reasons import RemovalReason
@@ -21,6 +22,32 @@ from rflying_tower_bot.ruleset_schemas import (
 log: logging.Logger = logging.getLogger(__name__)
 
 load_dotenv()
+
+log_level_map: dict[str, int] = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+}
+
+log_level = os.getenv("RFTB_LOG_LEVEL", "info")
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=log_level_map.get(log_level, logging.INFO),
+)
+
+sentry_dsn = os.getenv("RFTB_SENTRY_DSN")
+if sentry_dsn is not None:
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        release=bot_version,
+        environment=os.getenv("RFTB_ENVIRONMENT", "development"),
+        debug=log_level == "debug",
+        enable_tracing=True,
+        traces_sample_rate=float(os.getenv("RFTB_SENTRY_TRACE_RATE", 0.00001)),
+        profiles_sample_rate=float(os.getenv("RFTB_SENTRY_PROFILE_RATE", 0.00001)),
+    )
 
 
 class BotConfig:

@@ -9,10 +9,6 @@ from rflying_tower_bot.config import BotConfig, PRAWConfig
 from rflying_tower_bot.modlog import ModLog
 from rflying_tower_bot.post_stream import PostStream
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
 log: logging.Logger = logging.getLogger(f"{__name__}")
 
 praw_config = PRAWConfig()

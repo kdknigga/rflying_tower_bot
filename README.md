@@ -27,6 +27,12 @@ $ export RFTB_PRAW_CLIENT_SECRET="your_client_secret_here"
 $ export RFTB_PRAW_USERNAME="your_reddit_username_here"
 $ export RFTB_PRAW_PASSWORD="your_reddit_password_here"
 $ export RFTB_SUBREDDIT="the_name_of_a_subreddit_here"
+$ export RFTB_DB_CONNECTION_STRING="sqlite+aiosqlite:///:memory:" # Optional.  It keeps track of what actions have been done so they don't accidently get repeated.
+$ export RFTB_LOG_LEVEL="info" # Optional.  Can be debug, info, warning, error, or critical.
+$ export RFTB_SENTRY_DSN="your_sentry_dsn" # Optional.  Enables Sentry logging
+$ export RFTB_SENTRY_TRACE_RATE="0.1" # Optional.
+$ export RFTB_SENTRY_PROFILE_RATE="0.1" # Optional.
+$ export RFTB_ENVIRONMENT="development" # Optional.  This is for Sentry, mostly, currently
 ```
 
 or, put the secrets in a file called .env (see .env.example)

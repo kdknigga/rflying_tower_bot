@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rflying_tower_bot"
-version = "0.2.1"
+version = "0.3.0"
 description = ""
 authors = ["Kris Knigga <kris@knigga.com>"]
 
@@ -12,6 +12,7 @@ aiohttp = "^3.9.5"
 pydantic = "^2.8.2"
 python-dotenv = "^1.0.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.31"}
+sentry-sdk = "^2.10.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
