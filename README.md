@@ -22,11 +22,11 @@ See https://redditclient.readthedocs.io/en/latest/oauth/ for details.
 
 ### 5. Set up secrets in environment variables
 ```
-$ export PRAW_CLIENT_ID="your_client_id_here"
-$ export PRAW_CLIENT_SECRET="your_client_secret_here"
-$ export PRAW_USERNAME="your_reddit_username_here"
-$ export PRAW_PASSWORD="your_reddit_password_here"
-$ export SUBREDDIT="the_name_of_a_subreddit_here"
+$ export RFTB_PRAW_CLIENT_ID="your_client_id_here"
+$ export RFTB_PRAW_CLIENT_SECRET="your_client_secret_here"
+$ export RFTB_PRAW_USERNAME="your_reddit_username_here"
+$ export RFTB_PRAW_PASSWORD="your_reddit_password_here"
+$ export RFTB_SUBREDDIT="the_name_of_a_subreddit_here"
 ```
 
 or, put the secrets in a file called .env (see .env.example)

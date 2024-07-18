@@ -39,11 +39,11 @@ class BotConfig:
             f"{__name__}.{self.__class__.__name__}"
         )
         self.reddit: Reddit = reddit
-        self.subreddit_name: str = os.getenv("SUBREDDIT", "flying")
+        self.subreddit_name: str = os.getenv("RFTB_SUBREDDIT", "flying")
         self.rules_wiki_page = "botconfig/rflying_tower_bot"
         self.rules: Ruleset | None = None
         self.history = History(
-            os.getenv("DB_CONNECTION_STRING", "sqlite+aiosqlite:///:memory:")
+            os.getenv("RFTB_DB_CONNECTION_STRING", "sqlite+aiosqlite:///:memory:")
         )
 
     async def update_rules(self) -> None:
@@ -92,24 +92,24 @@ class PRAWConfig:
             f"{__name__}.{self.__class__.__name__}"
         )
 
-        self.client_id: str | None = os.getenv("PRAW_CLIENT_ID")
+        self.client_id: str | None = os.getenv("RFTB_PRAW_CLIENT_ID")
         if self.client_id is None:
-            raise TypeError("Environment variable PRAW_CLIENT_ID is not set")
+            raise TypeError("Environment variable RFTB_PRAW_CLIENT_ID is not set")
 
-        self.client_secret: str | None = os.getenv("PRAW_CLIENT_SECRET")
+        self.client_secret: str | None = os.getenv("RFTB_PRAW_CLIENT_SECRET")
         if self.client_secret is None:
-            raise TypeError("Environment variable PRAW_CLIENT_SECRET is not set")
+            raise TypeError("Environment variable RFTB_PRAW_CLIENT_SECRET is not set")
 
         self.client_user_agent: str = os.getenv(
-            "PRAW_CLIENT_USER_AGENT",
+            "RFTB_PRAW_CLIENT_USER_AGENT",
             f"Python/Linux:rFlyingTowerBot:{bot_version} (by /u/kdknigga)",
         )
 
-        self.username: str = os.getenv("PRAW_USERNAME", "rFlyingTower")
+        self.username: str = os.getenv("RFTB_PRAW_USERNAME", "rFlyingTower")
 
-        self.password: str | None = os.getenv("PRAW_PASSWORD")
+        self.password: str | None = os.getenv("RFTB_PRAW_PASSWORD")
         if self.client_secret is None:
-            raise TypeError("Environment variable PRAW_PASSWORD is not set")
+            raise TypeError("Environment variable RFTB_PRAW_PASSWORD is not set")
 
 
 async def get_current_post_flair(subreddit: Subreddit) -> dict[str, PostFlairSettings]:
