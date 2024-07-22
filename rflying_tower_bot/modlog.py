@@ -130,25 +130,35 @@ class ModLog:
             self.config.subreddit_name
         )
         self.log.info("Starting watch of %s's mod log", subreddit)
-        async for modlog_entry in subreddit.mod.stream.log(skip_existing=True):
-            self.log.debug(
-                "Found new modlog entry: %s did %s (%s) to target %s",
-                modlog_entry.mod,
-                modlog_entry.action,
-                modlog_entry.details,
-                modlog_entry.target_permalink,
-            )
-            if (
-                modlog_entry.action == "editflair"
-                and modlog_entry.target_fullname
-                and modlog_entry.target_fullname[:2] == "t3"
-            ):
-                target_name: str = modlog_entry.target_fullname[3:]
-                post: Submission = await self.config.reddit.submission(id=target_name)
-                await self.check_post_flair(post)
+        while True:
+            try:
+                async for modlog_entry in subreddit.mod.stream.log(skip_existing=True):
+                    self.log.debug(
+                        "Found new modlog entry: %s did %s (%s) to target %s",
+                        modlog_entry.mod,
+                        modlog_entry.action,
+                        modlog_entry.details,
+                        modlog_entry.target_permalink,
+                    )
+                    if (
+                        modlog_entry.action == "editflair"
+                        and modlog_entry.target_fullname
+                        and modlog_entry.target_fullname[:2] == "t3"
+                    ):
+                        target_name: str = modlog_entry.target_fullname[3:]
+                        post: Submission = await self.config.reddit.submission(
+                            id=target_name
+                        )
+                        await self.check_post_flair(post)
 
-            if (
-                modlog_entry.action == "wikirevise"
-                and modlog_entry.details == f"Page {self.config.rules_wiki_page} edited"
-            ):
-                await self.config.update_rules()
+                    if (
+                        modlog_entry.action == "wikirevise"
+                        and modlog_entry.details
+                        == f"Page {self.config.rules_wiki_page} edited"
+                    ):
+                        await self.config.update_rules()
+            except KeyboardInterrupt:
+                self.log.info("Caught keyboard interrupt, exiting modlog watcher")
+                break
+            except Exception as e:
+                self.log.error("Error in modlog watcher: %s", e)

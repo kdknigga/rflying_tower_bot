@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rflying_tower_bot"
-version = "0.3.0"
+version = "0.3.1"
 description = ""
 authors = ["Kris Knigga <kris@knigga.com>"]
 
