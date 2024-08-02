@@ -36,6 +36,13 @@ class PostStream:
             try:
                 async for post in subreddit.stream.submissions():
                     if (
+                        not self.config.rules
+                        or not self.config.rules.general_settings.enable_create_posterity_comments
+                    ):
+                        self.log.debug("Posterity comments disabled, skipping post")
+                        continue
+
+                    if (
                         await self.config.history.check(
                             post.permalink, "save_post_body"
                         )
@@ -43,6 +50,17 @@ class PostStream:
                     ):
                         self.log.info(
                             "Skipping post %s, already processed", post.permalink
+                        )
+                        continue
+
+                    if (
+                        post.author
+                        in self.config.rules.posterity_comment_settings.ignore_users
+                    ):
+                        self.log.info(
+                            "Skipping post %s, author %s is in ignore list",
+                            post.permalink,
+                            post.author,
                         )
                         continue
 

@@ -91,16 +91,27 @@ class BotConfig:
         else:
             if not self.rules:
                 return
-            if self.rules.post_flair:
+
+            if (
+                self.rules.post_flair
+                and self.rules.general_settings.enable_sync_post_flair
+            ):
                 self.log.info("Syncing post flair")
                 await sync_post_flair(
                     subreddit=subreddit, pf_rules=self.rules.post_flair
                 )
-            if self.rules.removal_reasons:
+            else:
+                self.log.info("Post flair doesn't exist or sync disabled")
+            if (
+                self.rules.removal_reasons
+                and self.rules.general_settings.enable_sync_removal_reasons
+            ):
                 self.log.info("Syncing removal reasons")
                 await sync_removal_reasons(
                     subreddit=subreddit, rr_rules=self.rules.removal_reasons
                 )
+            else:
+                self.log.info("Removal reasons don't exist or sync disabled")
 
 
 class PRAWConfig:

@@ -8,6 +8,21 @@ from pydantic import BaseModel, Field, model_validator
 log: logging.Logger = logging.getLogger(__name__)
 
 
+class GeneralSettings(BaseModel):
+    """Represents the general settings for the bot."""
+
+    enable_sync_removal_reasons: bool = True
+    enable_sync_post_flair: bool = True
+    enable_flair_actions: bool = True
+    enable_create_posterity_comments: bool = True
+
+
+class PosterityCommentSettings(BaseModel):
+    """Represents the settings for posterity comments."""
+
+    ignore_users: list[str] = []
+
+
 class FlairAction(BaseModel):
     """Represents a flair action."""
 
@@ -59,6 +74,8 @@ class RemovalReasonSettings(BaseModel):
 class Ruleset(BaseModel):
     """Represents the ruleset."""
 
+    general_settings: GeneralSettings = GeneralSettings()
+    posterity_comment_settings: PosterityCommentSettings = PosterityCommentSettings()
     flair_actions: dict[str, list[FlairAction]] | None = None
     post_flair: dict[str, PostFlairSettings] | None = None
     removal_reasons: dict[str, RemovalReasonSettings] | None = None

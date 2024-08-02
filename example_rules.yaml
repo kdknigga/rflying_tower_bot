@@ -1,3 +1,23 @@
+# These are the general settings for the bot that can be modified by moderators.
+general_settings:
+  # Synchronize removal reasons in this config file with the subreddit.
+  enable_sync_removal_reasons: true
+
+  # Synchronize post flair in this config file with the subreddit.
+  enable_sync_post_flair: true
+
+  # Respond to post flair changes with actions defined in this config file.
+  enable_flair_actions: true
+
+  # Create posterity comments on new posts
+  enable_create_posterity_comments: true
+
+posterity_comment_settings:
+  # When these users post, don't create a posterity comment
+  ignore_users:
+    - AutoModerator
+    - rFlyingTower
+
 # The flair_actions section creates rules that match the flair applied to a post to a set of actions.
 flair_actions:
   # This is the start of a rule.  This will trigger when a post is given the flair "DPE report"

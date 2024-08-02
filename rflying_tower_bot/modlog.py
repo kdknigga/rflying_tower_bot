@@ -105,7 +105,14 @@ class ModLog:
             NotImplementedError: Thrown if a rule uses an unsupported action
 
         """
-        if not self.config.rules or not self.config.rules.flair_actions:
+        if (
+            not self.config.rules
+            or not self.config.rules.general_settings.enable_flair_actions
+        ):
+            self.log.debug("Flair actions are disabled")
+            return
+
+        if not self.config.rules.flair_actions:
             self.log.warning("No flair actions defined in the ruleset")
             return
 
