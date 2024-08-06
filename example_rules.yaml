@@ -12,6 +12,9 @@ general_settings:
   # Create posterity comments on new posts
   enable_create_posterity_comments: true
 
+  # Watch the private message inbox for commands from moderators
+  enable_inbox_actions: true
+
 posterity_comment_settings:
   # When these users post, don't create a posterity comment
   ignore_users:

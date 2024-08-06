@@ -6,6 +6,7 @@ import logging
 import asyncpraw
 
 from rflying_tower_bot.config import BotConfig, PRAWConfig
+from rflying_tower_bot.inbox import Inbox
 from rflying_tower_bot.modlog import ModLog
 from rflying_tower_bot.post_stream import PostStream
 
@@ -34,8 +35,11 @@ async def main() -> None:
 
         modlog = ModLog(bot_config)
         post_stream = PostStream(bot_config)
+        inbox = Inbox(bot_config)
 
-        await asyncio.gather(modlog.watch_modlog(), post_stream.watch_poststream())
+        await asyncio.gather(
+            modlog.watch_modlog(), post_stream.watch_poststream(), inbox.watch_inbox()
+        )
 
 
 try:
