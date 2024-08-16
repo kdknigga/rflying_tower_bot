@@ -40,6 +40,6 @@ class Utilities:
         """
         return (
             body
-            + "\n\n --- \nThis comment was made by a [bot](https://github.com/kdknigga/rflying_tower_bot).  "
+            + "\n\n --- \nI am a bot, and this action was performed automatically.  "
             f"If you have any questions, please [contact the mods of this subreddit](https://www.reddit.com/message/compose?to=/r/{self.config.subreddit_name})."  # noqa: E501
         )
