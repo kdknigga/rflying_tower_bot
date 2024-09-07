@@ -3,6 +3,7 @@
 import logging
 import time
 
+from asyncpraw.exceptions import RedditAPIException
 from asyncpraw.models import Comment, Subreddit
 from asyncprawcore.exceptions import RequestException, ServerError
 
@@ -68,10 +69,26 @@ class PostStream:
 
                     self.log.info("New post from %s: %s", post.author, post.permalink)
                     if post.selftext != "":
-                        comment_text = f"This is a copy of the original post body for posterity:\n\n --- \n{post.selftext}"
-                        c: Comment | None = await post.reply(
-                            self.utilities.format_comment(comment_text)
+                        # Reddit comments have a max length of 10,000 characters, so truncate the post body if it's too long
+                        # Leave room for the bot header and footer
+                        truncated_original_post_body: str = post.selftext[:9500] + (
+                            post.selftext[9500:] and "..."
                         )
+                        comment_text = f"This is a copy of the original post body for posterity:\n\n --- \n{truncated_original_post_body}"
+                        c: Comment | None = None
+                        try:
+                            c = await post.reply(
+                                self.utilities.format_comment(comment_text)
+                            )
+                        except RedditAPIException as e:
+                            self.log.error(
+                                "API error making comment on %s: %s.  Logging the comment as successful to prevent constant retrying.",
+                                post.permalink,
+                                e,
+                            )
+                            await self.config.history.add(
+                                post.permalink, "save_post_body"
+                            )
                         if not c:
                             self.log.error(
                                 "Making comment on %s seems to have failed", str(post)
