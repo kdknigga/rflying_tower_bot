@@ -1,8 +1,10 @@
 """A module to react to moderator log events."""
 
 import logging
+import time
 
 from asyncpraw.models import Comment, Submission, Subreddit
+from asyncprawcore.exceptions import RequestException, ServerError
 
 from rflying_tower_bot.config import BotConfig, get_current_removal_reasons
 from rflying_tower_bot.ruleset_schemas import RemovalReasonSettings
@@ -164,6 +166,11 @@ class ModLog:
                         == f"Page {self.config.rules_wiki_page} edited"
                     ):
                         await self.config.update_rules()
+
+            except (RequestException, ServerError) as e:
+                self.log.warning("Server error in post stream watcher: %s", e)
+                # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
+                time.sleep(60)
             except KeyboardInterrupt:
                 self.log.info("Caught keyboard interrupt, exiting modlog watcher")
                 break

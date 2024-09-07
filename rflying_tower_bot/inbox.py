@@ -1,9 +1,11 @@
 """A module to react to private messages."""
 
 import logging
+import time
 from os import PathLike
 
 from asyncpraw.models import Subreddit
+from asyncprawcore.exceptions import RequestException, ServerError
 
 from rflying_tower_bot.config import BotConfig, dump_current_settings
 from rflying_tower_bot.utilities import Utilities
@@ -94,6 +96,10 @@ class Inbox:
                         case _:
                             self.log.warning("Unknown command: %s", message.subject)
 
+            except (RequestException, ServerError) as e:
+                self.log.warning("Server error in post stream watcher: %s", e)
+                # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
+                time.sleep(60)
             except KeyboardInterrupt:
                 self.log.info("Caught keyboard interrupt, exiting inbox watcher")
                 break

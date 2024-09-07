@@ -1,8 +1,10 @@
 """A module to react to new posts."""
 
 import logging
+import time
 
 from asyncpraw.models import Comment, Subreddit
+from asyncprawcore.exceptions import RequestException, ServerError
 
 from rflying_tower_bot.config import BotConfig
 from rflying_tower_bot.utilities import Utilities
@@ -81,6 +83,11 @@ class PostStream:
                             "Comment created with post body for posterity: %s",
                             c.permalink,
                         )
+
+            except (RequestException, ServerError) as e:
+                self.log.warning("Server error in post stream watcher: %s", e)
+                # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
+                time.sleep(60)
             except KeyboardInterrupt:
                 self.log.info("Caught keyboard interrupt, exiting post stream watcher")
                 break
