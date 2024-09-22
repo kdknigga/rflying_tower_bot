@@ -93,7 +93,7 @@ class PostStream:
                             self.log.error(
                                 "Making comment on %s seems to have failed", str(post)
                             )
-                            return
+                            continue
                         await c.mod.distinguish(sticky=False)
                         await self.config.history.add(post.permalink, "save_post_body")
                         self.log.info(
