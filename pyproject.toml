@@ -21,6 +21,10 @@ pytest = "^6.2"
 prospector = {extras = ["with-bandit", "with-mypy"], version = "^1.10.3"}
 types-PyYAML = "^6.0.12.20240311"
 
+[tool.poetry_bumpversion.file."rflying_tower_bot/__init__.py"]
+
+[tool.poetry_bumpversion.file."tests/test_rflying_tower_bot.py"]
+
 [tool.ruff]
 target-version = "py312"
 
