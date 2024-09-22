@@ -23,8 +23,8 @@ async def main() -> None:
         user_agent=praw_config.client_user_agent,
         username=praw_config.username,
         password=praw_config.password,
-        ratelimit_seconds=600,
-        timeout=30,
+        ratelimit_seconds=900,
+        timeout=60,
         validate_on_submit=True,
     ) as reddit:
         bot_config = BotConfig(reddit)

@@ -81,14 +81,30 @@ class PostStream:
                                 self.utilities.format_comment(comment_text)
                             )
                         except RedditAPIException as e:
-                            self.log.error(
-                                "API error making comment on %s: %s.  Logging the comment as successful to prevent constant retrying.",
-                                post.permalink,
-                                e,
-                            )
-                            await self.config.history.add(
-                                post.permalink, "save_post_body"
-                            )
+                            for sube in e.items:
+                                self.log.error(
+                                    "API error making comment on %s: %s.",
+                                    post.permalink,
+                                    sube,
+                                )
+
+                                match sube.error_type:
+                                    case "RATELIMIT":
+                                        self.log.warning(
+                                            "Rate limit hit, sleeping for 15 minutes"
+                                        )
+                                        time.sleep(900)
+
+                                    # case "TOO_LONG":
+                                    case _:
+                                        self.log.error(
+                                            "Marking post as processed and moving on."
+                                        )
+
+                                        await self.config.history.add(
+                                            post.permalink, "save_post_body"
+                                        )
+
                         if not c:
                             self.log.error(
                                 "Making comment on %s seems to have failed", str(post)
@@ -102,7 +118,9 @@ class PostStream:
                         )
 
             except (RequestException, ServerError) as e:
-                self.log.warning("Server error in post stream watcher: %s", e)
+                self.log.warning(
+                    "Server error in post stream watcher: %s.  Sleeping for a bit.", e
+                )
                 # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
                 time.sleep(60)
             except KeyboardInterrupt:

@@ -97,7 +97,9 @@ class Inbox:
                             self.log.warning("Unknown command: %s", message.subject)
 
             except (RequestException, ServerError) as e:
-                self.log.warning("Server error in post stream watcher: %s", e)
+                self.log.warning(
+                    "Server error in post stream watcher: %s.  Sleeping for a bit.", e
+                )
                 # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
                 time.sleep(60)
             except KeyboardInterrupt:
