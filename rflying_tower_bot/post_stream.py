@@ -111,6 +111,7 @@ class PostStream:
                             )
                             continue
                         await c.mod.distinguish(sticky=False)
+                        await c.mod.lock()
                         await self.config.history.add(post.permalink, "save_post_body")
                         self.log.info(
                             "Comment created with post body for posterity: %s",
