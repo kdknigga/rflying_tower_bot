@@ -142,7 +142,7 @@ class ModLog:
         while True:
             try:
                 async for modlog_entry in subreddit.mod.stream.log(skip_existing=True):
-                    self.log.debug(
+                    self.log.info(
                         "Found new modlog entry: %s did %s (%s) to target %s",
                         modlog_entry.mod,
                         modlog_entry.action,
