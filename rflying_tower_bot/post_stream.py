@@ -94,7 +94,7 @@ class PostStream:
             truncated_original_post_body: str = post.selftext[:9500] + (
                 post.selftext[9500:] and "..."
             )
-            comment_text = f"This is a copy of the original post body for posterity:\n\n --- \n{truncated_original_post_body}"
+            comment_text = f"This is a copy of the original post body for posterity:\n\n --- \n{truncated_original_post_body} \n\n --- \n Please downvote this comment until it collapses.\n\n"
             c: Comment | None = None
             try:
                 c = await post.reply(self.utilities.format_comment(comment_text))
