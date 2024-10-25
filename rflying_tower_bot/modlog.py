@@ -1,7 +1,7 @@
 """A module to react to moderator log events."""
 
+import asyncio
 import logging
-import time
 
 from asyncpraw.models import Comment, Submission, Subreddit
 from asyncprawcore.exceptions import RequestException, ServerError
@@ -133,13 +133,13 @@ class ModLog:
                     else:
                         await func(post)
 
-    async def watch_modlog(self) -> None:
+    async def watch_modlog(self, stop_event: asyncio.Event) -> None:
         """Watch for modlog entries and act on them when they match a rule, in an infinite loop."""
         subreddit: Subreddit = await self.config.reddit.subreddit(
             self.config.subreddit_name
         )
         self.log.info("Starting watch of %s's mod log", subreddit)
-        while True:
+        while not stop_event.is_set():
             try:
                 async for modlog_entry in subreddit.mod.stream.log(skip_existing=True):
                     self.log.info(
@@ -169,12 +169,15 @@ class ModLog:
 
             except (RequestException, ServerError) as e:
                 self.log.warning(
-                    "Server error in post stream watcher: %s.  Sleeping for a bit.", e
+                    "Server error in post stream watcher: %s.  Exiting.", e
                 )
-                # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
-                time.sleep(60)
+                stop_event.set()
+                break
             except KeyboardInterrupt:
                 self.log.info("Caught keyboard interrupt, exiting modlog watcher")
+                stop_event.set()
                 break
             except Exception as e:
                 self.log.error("Error in modlog watcher: %s", e)
+                stop_event.set()
+                break

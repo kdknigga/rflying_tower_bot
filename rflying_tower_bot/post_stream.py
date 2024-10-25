@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import time
 
 from asyncpraw.exceptions import RedditAPIException
 from asyncpraw.models import Comment, Subreddit
@@ -30,30 +29,34 @@ class PostStream:
         self.config = config
         self.utilities = Utilities(config)
 
-    async def watch_poststream(self) -> None:
+    async def watch_poststream(self, stop_event: asyncio.Event) -> None:
         """Watch the post stream and react to new posts."""
         subreddit: Subreddit = await self.config.reddit.subreddit(
             self.config.subreddit_name
         )
         self.log.info("Watching the post stream for new posts in %s", subreddit)
-        while True:
+        while not stop_event.is_set():
             try:
                 await self._watch_submissions(subreddit)
             except (RequestException, ServerError) as e:
                 self.log.warning(
-                    "Server error in post stream watcher: %s.  Sleeping for a bit.", e
+                    "Server error in post stream watcher: %s.  Exiting.", e
                 )
-                # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
-                time.sleep(60)
+                break
             except asyncio.CancelledError:
                 self.log.info("Post stream watcher cancelled, exiting")
+                stop_event.set()
                 break
             except KeyboardInterrupt:
                 self.log.info("Caught keyboard interrupt, exiting post stream watcher")
+                stop_event.set()
                 break
             except Exception as e:
-                self.log.error("Error in post stream watcher: %s", e, exc_info=True)
-                await asyncio.sleep(60)
+                self.log.error(
+                    "Error in post stream watcher: %s.  Exiting.", e, exc_info=True
+                )
+                stop_event.set()
+                break
 
     async def _watch_submissions(self, subreddit: Subreddit) -> None:
         """Watch submissions in the subreddit."""

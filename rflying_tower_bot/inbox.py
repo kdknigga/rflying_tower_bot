@@ -1,7 +1,7 @@
 """A module to react to private messages."""
 
+import asyncio
 import logging
-import time
 from os import PathLike
 
 from asyncpraw.models import Subreddit
@@ -46,12 +46,12 @@ class Inbox:
         """
         await dump_current_settings(subreddit, str(path))
 
-    async def watch_inbox(self) -> None:
+    async def watch_inbox(self, stop_event: asyncio.Event) -> None:
         """Watch the private message inbox and react to new messages."""
         self.log.info("Watching the inbox for new messages")
         subreddit = await self.config.reddit.subreddit(self.config.subreddit_name)
         moderators = [moderator async for moderator in subreddit.moderator]
-        while True:
+        while not stop_event.is_set():
             try:
                 # Skip existing messages to avoid processing the same message multiple times
                 # This is different from other streams, which do not skip existing items
@@ -98,12 +98,15 @@ class Inbox:
 
             except (RequestException, ServerError) as e:
                 self.log.warning(
-                    "Server error in post stream watcher: %s.  Sleeping for a bit.", e
+                    "Server error in post stream watcher: %s.  Exiting.", e
                 )
-                # Yes, I know a blocking sleep in async code is bad, but if Reddit is having a problem might as well pause the whole bot
-                time.sleep(60)
+                stop_event.set()
+                break
             except KeyboardInterrupt:
                 self.log.info("Caught keyboard interrupt, exiting inbox watcher")
+                stop_event.set()
                 break
             except Exception as e:
                 self.log.error("Error in inbox watcher: %s", e)
+                stop_event.set()
+                break

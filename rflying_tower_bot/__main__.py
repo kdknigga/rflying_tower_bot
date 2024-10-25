@@ -37,8 +37,12 @@ async def main() -> None:
         post_stream = PostStream(bot_config)
         inbox = Inbox(bot_config)
 
+        stop_event = asyncio.Event()
+
         await asyncio.gather(
-            modlog.watch_modlog(), post_stream.watch_poststream(), inbox.watch_inbox()
+            modlog.watch_modlog(stop_event),
+            post_stream.watch_poststream(stop_event),
+            inbox.watch_inbox(stop_event),
         )
 
 
