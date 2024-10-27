@@ -4,6 +4,7 @@ import asyncio
 import logging
 
 import asyncpraw
+from aiohttp import ClientSession
 
 from rflying_tower_bot.config import BotConfig, PRAWConfig
 from rflying_tower_bot.inbox import Inbox
@@ -17,7 +18,9 @@ praw_config = PRAWConfig()
 
 async def main() -> None:
     """Initialize the bot, grab the rules, and start any event loops."""
+    session = ClientSession(trust_env=True)
     async with asyncpraw.Reddit(
+        requestor_kwargs={"session": session},
         client_id=praw_config.client_id,
         client_secret=praw_config.client_secret,
         user_agent=praw_config.client_user_agent,
