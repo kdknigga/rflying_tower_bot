@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from asyncpraw.models import Comment, Submission, Subreddit
+from asyncpraw.models import Submission, Subreddit
 from asyncprawcore.exceptions import RequestException, ServerError
 
 from rflying_tower_bot.config import BotConfig, get_current_removal_reasons
@@ -40,7 +40,7 @@ class ModLog:
 
         """
         self.log.info("Commenting on %s's post: %s", post.author, post.permalink)
-        c: Comment | None = await post.reply(self.utilities.format_comment(comment))
+        c = await post.reply(self.utilities.format_comment(comment))
         if not c:
             self.log.error("Making comment on %s seems to have failed", str(post))
             return
