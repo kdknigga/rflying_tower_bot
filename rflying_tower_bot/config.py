@@ -32,10 +32,24 @@ log_level_map: dict[str, int] = {
 }
 
 log_level = os.getenv("RFTB_LOG_LEVEL", "info")
+
+if log_level == "debug":
+    aiosqlite_log_level = "info"
+elif log_level == "insane":
+    log_level = "debug"
+    aiosqlite_log_level = log_level
+else:
+    aiosqlite_log_level = log_level
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=log_level_map.get(log_level, logging.INFO),
 )
+
+if aiosqlite_log_level != log_level:
+    logging.getLogger("aiosqlite").setLevel(
+        log_level_map.get(aiosqlite_log_level, logging.INFO)
+    )
 
 sentry_dsn = os.getenv("RFTB_SENTRY_DSN")
 if sentry_dsn is not None:
