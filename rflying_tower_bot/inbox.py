@@ -58,8 +58,14 @@ class Inbox:
                 # The idea is that commands are more timely than other events, so commands sent
                 # while the bot is offline probably shouldn't be done when the bot comes back online
                 async for message in self.config.reddit.inbox.stream(
-                    skip_existing=True
+                    skip_existing=True, pause_after=10
                 ):
+                    # Break out of the for loop occasionally if there's nothing going on for a while
+                    # to check if the stop_event is set.  message will be None if pause_after is reached
+                    if message is None:
+                        self.log.debug("Pausing inbox stream")
+                        break
+
                     if (
                         not self.config.rules
                         or not self.config.rules.general_settings.enable_inbox_actions

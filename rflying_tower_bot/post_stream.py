@@ -60,7 +60,13 @@ class PostStream:
 
     async def _watch_submissions(self, subreddit: Subreddit) -> None:
         """Watch submissions in the subreddit."""
-        async for post in subreddit.stream.submissions():
+        async for post in subreddit.stream.submissions(pause_after=6):
+            # Break out of the for loop occasionally if there's nothing going on for a while
+            # to check if the stop_event is set.  post will be None if pause_after is reached
+            if post is None:
+                self.log.debug("Pausing post stream")
+                break
+
             if not await self._should_process_post(post):
                 continue
             await self._process_post(post)

@@ -141,7 +141,15 @@ class ModLog:
         self.log.info("Starting watch of %s's mod log", subreddit)
         while not stop_event.is_set():
             try:
-                async for modlog_entry in subreddit.mod.stream.log(skip_existing=True):
+                async for modlog_entry in subreddit.mod.stream.log(
+                    skip_existing=True, pause_after=10
+                ):
+                    # Break out of the for loop occasionally if there's nothing going on for a while
+                    # to check if the stop_event is set.  modlog_entry will be None if pause_after is reached
+                    if modlog_entry is None:
+                        self.log.debug("Pausing modlog stream")
+                        break
+
                     self.log.info(
                         "Found new modlog entry: %s did %s (%s) to target %s",
                         modlog_entry.mod,
