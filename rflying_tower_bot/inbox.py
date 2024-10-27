@@ -50,8 +50,8 @@ class Inbox:
         """Watch the private message inbox and react to new messages."""
         self.log.info("Watching the inbox for new messages")
         subreddit = await self.config.reddit.subreddit(self.config.subreddit_name)
-        moderators = [moderator async for moderator in subreddit.moderator]
         while not stop_event.is_set():
+            moderators = [moderator async for moderator in subreddit.moderator]
             try:
                 # Skip existing messages to avoid processing the same message multiple times
                 # This is different from other streams, which do not skip existing items
