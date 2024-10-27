@@ -28,6 +28,7 @@ class PostStream:
         )
         self.config = config
         self.utilities = Utilities(config)
+        self.skip_existing = False
 
     async def watch_poststream(self, stop_event: asyncio.Event) -> None:
         """Watch the post stream and react to new posts."""
@@ -60,11 +61,14 @@ class PostStream:
 
     async def _watch_submissions(self, subreddit: Subreddit) -> None:
         """Watch submissions in the subreddit."""
-        async for post in subreddit.stream.submissions(pause_after=6):
+        async for post in subreddit.stream.submissions(
+            skip_existing=self.skip_existing, pause_after=6
+        ):
             # Break out of the for loop occasionally if there's nothing going on for a while
             # to check if the stop_event is set.  post will be None if pause_after is reached
             if post is None:
                 self.log.debug("Pausing post stream")
+                self.skip_existing = True
                 break
 
             if not await self._should_process_post(post):
