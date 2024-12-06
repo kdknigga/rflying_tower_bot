@@ -2,6 +2,7 @@
 
 import logging
 import os
+from typing import Any
 
 import sentry_sdk
 from asyncpraw import Reddit
@@ -162,6 +163,36 @@ class PRAWConfig:
         self.password: str | None = os.getenv("RFTB_PRAW_PASSWORD")
         if self.client_secret is None:
             raise TypeError("Environment variable RFTB_PRAW_PASSWORD is not set")
+
+        self.reddit_site_options: dict[str, Any] = {}
+
+        reddit_url: str | None = os.getenv("RFTB_PRAW_REDDIT_URL")
+        if reddit_url is not None:
+            self.reddit_site_options["reddit_url"] = reddit_url
+
+        oauth_url: str | None = os.getenv("RFTB_PRAW_OAUTH_URL")
+        if oauth_url is not None:
+            self.reddit_site_options["oauth_url"] = oauth_url
+
+        short_url: str | None = os.getenv("RFTB_PRAW_SHORT_URL")
+        if short_url is not None:
+            self.reddit_site_options["short_url"] = short_url
+
+        comment_kind: str | None = os.getenv("RFTB_PRAW_COMMENT_KIND")
+        if comment_kind is not None:
+            self.reddit_site_options["comment_kind"] = comment_kind
+
+        message_kind: str | None = os.getenv("RFTB_PRAW_MESSAGE_KIND")
+        if message_kind is not None:
+            self.reddit_site_options["message_kind"] = message_kind
+
+        redditor_kind: str | None = os.getenv("RFTB_PRAW_REDDITOR_KIND")
+        if redditor_kind is not None:
+            self.reddit_site_options["redditor_kind"] = redditor_kind
+
+        subreddit_kind: str | None = os.getenv("RFTB_PRAW_SUBREDDIT_KIND")
+        if subreddit_kind is not None:
+            self.reddit_site_options["subreddit_kind"] = subreddit_kind
 
 
 async def get_current_post_flair(subreddit: Subreddit) -> dict[str, PostFlairSettings]:

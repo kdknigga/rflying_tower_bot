@@ -29,6 +29,7 @@ async def main() -> None:
         ratelimit_seconds=900,
         timeout=60,
         validate_on_submit=True,
+        **praw_config.reddit_site_options,
     ) as reddit:
         bot_config = BotConfig(reddit)
 
