@@ -176,9 +176,11 @@ class ModLog:
                         await self.config.update_rules()
 
             except (RequestException, ServerError) as e:
-                self.log.warning(
-                    "Server error in post stream watcher: %s.  Exiting.", e
-                )
+                self.log.error("Server error in modlog watcher: %s.  Exiting.", e)
+                stop_event.set()
+                break
+            except asyncio.CancelledError:
+                self.log.info("Modlog watcher cancelled, exiting")
                 stop_event.set()
                 break
             except KeyboardInterrupt:

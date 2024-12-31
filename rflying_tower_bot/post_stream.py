@@ -40,9 +40,7 @@ class PostStream:
             try:
                 await self._watch_submissions(subreddit)
             except (RequestException, ServerError) as e:
-                self.log.warning(
-                    "Server error in post stream watcher: %s.  Exiting.", e
-                )
+                self.log.error("Server error in post stream watcher: %s.  Exiting.", e)
                 break
             except asyncio.CancelledError:
                 self.log.info("Post stream watcher cancelled, exiting")

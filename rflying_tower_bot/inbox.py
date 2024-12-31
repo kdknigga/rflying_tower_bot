@@ -103,9 +103,11 @@ class Inbox:
                             self.log.warning("Unknown command: %s", message.subject)
 
             except (RequestException, ServerError) as e:
-                self.log.warning(
-                    "Server error in post stream watcher: %s.  Exiting.", e
-                )
+                self.log.error("Server error in inbox watcher: %s.  Exiting.", e)
+                stop_event.set()
+                break
+            except asyncio.CancelledError:
+                self.log.info("Inbox watcher cancelled, exiting")
                 stop_event.set()
                 break
             except KeyboardInterrupt:
