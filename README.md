@@ -28,11 +28,16 @@ $ export RFTB_PRAW_USERNAME="your_reddit_username_here"
 $ export RFTB_PRAW_PASSWORD="your_reddit_password_here"
 $ export RFTB_SUBREDDIT="the_name_of_a_subreddit_here"
 $ export RFTB_DB_CONNECTION_STRING="sqlite+aiosqlite:///:memory:" # Optional.  It keeps track of what actions have been done so they don't accidently get repeated.
+$ export RFTB_LOG_HANDLERS="console" # Optional.  A comma-seperated list of places to send log messages.  Defaults to console, but discord is an option (with the correct additional configuration).
 $ export RFTB_LOG_LEVEL="info" # Optional.  Can be debug, info, warning, error, or critical.
+$ export RFTB_LOG_DISCORD_WEBHOOK_URL="your_discord_webhook_url_here" # Optional.  Only needed if RFTB_LOG_HANDLERS contains "discord".
+$ export RFTB_LOG_DISCORD_BOT_NAME="your_discord_bot_name_here" # Optional.  Only used if RFTB_LOG_HANDLERS contains "discord".  Defaults to RFTB_PRAW_USERNAME.
+$ export RFTB_LOG_DISCORD_BOT_AVATAR_URL="your_discord_bot_avatar_url_here" # Optional.  Only used if RFTB_LOG_HANDLERS contains "discord".
 $ export RFTB_SENTRY_DSN="your_sentry_dsn" # Optional.  Enables Sentry logging
 $ export RFTB_SENTRY_TRACE_RATE="0.1" # Optional.
 $ export RFTB_SENTRY_PROFILE_RATE="0.1" # Optional.
 $ export RFTB_ENVIRONMENT="development" # Optional.  This is for Sentry, mostly, currently
+$ export RFTB_PRAW_OAUTH_URL="your_oauth_url_here" # Optional.  Used to point at an instance of Reddit not running at reddit.com.  This generally is only needed for deep development work.
 ```
 
 or, put the secrets in a file called .env (see .env.example)

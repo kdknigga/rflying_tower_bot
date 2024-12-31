@@ -4,13 +4,12 @@ import logging
 import os
 from typing import Any
 
-import sentry_sdk
 from asyncpraw import Reddit
 from asyncpraw.models import Subreddit
 from asyncpraw.models.reddit.removal_reasons import RemovalReason
 from asyncpraw.models.reddit.wikipage import WikiPage
 from dotenv import load_dotenv
-from pydantic_yaml import parse_yaml_raw_as, to_yaml_str  # type: ignore
+from pydantic_yaml import parse_yaml_raw_as, to_yaml_str
 
 from rflying_tower_bot import __version__ as bot_version
 from rflying_tower_bot.history import History
@@ -23,6 +22,30 @@ from rflying_tower_bot.ruleset_schemas import (
 log: logging.Logger = logging.getLogger(__name__)
 
 load_dotenv()
+
+
+def check_required_setting(setting: str) -> None:
+    """Check if a required setting is set in the environment."""
+    if os.getenv(setting) is None:
+        raise TypeError(f"Required setting {setting} is not set")
+
+
+def set_default_setting(setting: str, default: str) -> None:
+    """Set a default value for an environment variable."""
+    if setting not in os.environ or os.getenv(setting) == "":
+        os.environ[setting] = default
+
+
+## You'll see some "default='anystring'" in the code below.
+## This is to get around the type checker thinking os.getenv could return None.
+## Where "anystring" is used, we're making sure everything is set ourselves, so we know it's not None.
+
+# Set default values for environment variables used in multiple places
+set_default_setting("RFTB_PRAW_USERNAME", "rFlyingTower")
+set_default_setting(
+    "RFTB_LOG_DISCORD_BOT_NAME",
+    default=os.getenv("RFTB_PRAW_USERNAME", default="anystring"),
+)
 
 log_level_map: dict[str, int] = {
     "debug": logging.DEBUG,
@@ -42,10 +65,32 @@ elif log_level == "insane":
 else:
     aiosqlite_log_level = log_level
 
+# Always log to the console
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=log_level_map.get(log_level, logging.INFO),
 )
+log.debug("Added console logging")
+
+
+log_handlers = os.getenv("RFTB_LOG_HANDLERS", default="console").lower().split(",")
+
+if "discord" in log_handlers:
+    from discord_logging.handler import DiscordHandler
+
+    check_required_setting("RFTB_LOG_DISCORD_WEBHOOK_URL")
+
+    discord_handler = DiscordHandler(
+        service_name=os.getenv("RFTB_LOG_DISCORD_BOT_NAME", default="anystring"),
+        webhook_url=os.getenv("RFTB_LOG_DISCORD_WEBHOOK_URL", default="anystring"),
+        avatar_url=os.getenv("RFTB_LOG_DISCORD_BOT_AVATAR_URL", None),
+    )
+
+    discord_handler.setFormatter(logging.Formatter("%(name)s - %(message)s"))
+    discord_handler.setLevel(log_level_map.get(log_level, logging.INFO))
+    logging.getLogger("rflying_tower_bot").addHandler(discord_handler)
+    log.debug("Added discord logging")
+
 
 if aiosqlite_log_level != log_level:
     logging.getLogger("aiosqlite").setLevel(
@@ -54,6 +99,9 @@ if aiosqlite_log_level != log_level:
 
 sentry_dsn = os.getenv("RFTB_SENTRY_DSN")
 if sentry_dsn is not None:
+    import sentry_sdk
+    from sentry_sdk.integrations.logging import ignore_logger
+
     sentry_sdk.init(
         dsn=sentry_dsn,
         release=bot_version,
@@ -63,6 +111,8 @@ if sentry_dsn is not None:
         traces_sample_rate=float(os.getenv("RFTB_SENTRY_TRACE_RATE", 0.00001)),
         profiles_sample_rate=float(os.getenv("RFTB_SENTRY_PROFILE_RATE", 0.00001)),
     )
+
+    ignore_logger("discord_webhook.webhook")
 
 
 class BotConfig:
@@ -145,24 +195,23 @@ class PRAWConfig:
             f"{__name__}.{self.__class__.__name__}"
         )
 
-        self.client_id: str | None = os.getenv("RFTB_PRAW_CLIENT_ID")
-        if self.client_id is None:
-            raise TypeError("Environment variable RFTB_PRAW_CLIENT_ID is not set")
+        check_required_setting("RFTB_PRAW_CLIENT_ID")
+        self.client_id: str = os.getenv("RFTB_PRAW_CLIENT_ID", default="anystring")
 
-        self.client_secret: str | None = os.getenv("RFTB_PRAW_CLIENT_SECRET")
-        if self.client_secret is None:
-            raise TypeError("Environment variable RFTB_PRAW_CLIENT_SECRET is not set")
+        check_required_setting("RFTB_PRAW_CLIENT_SECRET")
+        self.client_secret: str = os.getenv(
+            "RFTB_PRAW_CLIENT_SECRET", default="anystring"
+        )
 
         self.client_user_agent: str = os.getenv(
             "RFTB_PRAW_CLIENT_USER_AGENT",
             f"Python/Linux:rFlyingTowerBot:{bot_version} (by /u/kdknigga)",
         )
 
-        self.username: str = os.getenv("RFTB_PRAW_USERNAME", "rFlyingTower")
+        self.username: str = os.getenv("RFTB_PRAW_USERNAME", "anystring")
 
-        self.password: str | None = os.getenv("RFTB_PRAW_PASSWORD")
-        if self.client_secret is None:
-            raise TypeError("Environment variable RFTB_PRAW_PASSWORD is not set")
+        check_required_setting("RFTB_PRAW_PASSWORD")
+        self.password: str = os.getenv("RFTB_PRAW_PASSWORD", default="anystring")
 
         self.reddit_site_options: dict[str, Any] = {}
 

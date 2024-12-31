@@ -13,11 +13,13 @@ from rflying_tower_bot.post_stream import PostStream
 
 log: logging.Logger = logging.getLogger(f"{__name__}")
 
+
 praw_config = PRAWConfig()
 
 
 async def main() -> None:
     """Initialize the bot, grab the rules, and start any event loops."""
+    log.info("Starting main loop")
     session = ClientSession(trust_env=True)
     async with asyncpraw.Reddit(
         requestor_kwargs={"session": session},
