@@ -12,7 +12,7 @@ from rflying_tower_bot.inbox import Inbox
 from rflying_tower_bot.modlog import ModLog
 from rflying_tower_bot.post_stream import PostStream
 
-log: logging.Logger = logging.getLogger(f"{__name__}")
+log: logging.Logger = logging.getLogger("rflying_tower_bot")
 
 
 praw_config = PRAWConfig()
