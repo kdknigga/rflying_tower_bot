@@ -76,7 +76,14 @@ log.debug("Added console logging")
 log_handlers = os.getenv("RFTB_LOG_HANDLERS", default="console").lower().split(",")
 
 if "discord" in log_handlers:
+    import queue
+    from logging.handlers import QueueHandler, QueueListener
+
     from discord_logging.handler import DiscordHandler
+
+    # Set up log queue
+    log_queue = queue.Queue()
+    queue_handler = QueueHandler(log_queue)
 
     check_required_setting("RFTB_LOG_DISCORD_WEBHOOK_URL")
 
@@ -88,7 +95,9 @@ if "discord" in log_handlers:
 
     discord_handler.setFormatter(logging.Formatter("%(name)s - %(message)s"))
     discord_handler.setLevel(log_level_map.get(log_level, logging.INFO))
-    logging.getLogger("rflying_tower_bot").addHandler(discord_handler)
+    queue_listener = QueueListener(log_queue, discord_handler)
+    logging.getLogger("rflying_tower_bot").addHandler(queue_handler)
+    queue_listener.start()
     log.debug("Added discord logging")
 
 
