@@ -6,6 +6,7 @@ import logging
 import asyncpraw
 from aiohttp import ClientSession
 
+from rflying_tower_bot import __version__
 from rflying_tower_bot.config import BotConfig, PRAWConfig
 from rflying_tower_bot.inbox import Inbox
 from rflying_tower_bot.modlog import ModLog
@@ -19,7 +20,6 @@ praw_config = PRAWConfig()
 
 async def main() -> None:
     """Initialize the bot, grab the rules, and start any event loops."""
-    log.info("Starting main loop")
     session = ClientSession(trust_env=True)
     async with asyncpraw.Reddit(
         requestor_kwargs={"session": session},
@@ -45,6 +45,7 @@ async def main() -> None:
 
         stop_event = asyncio.Event()
 
+        log.info(f"rflying_tower_bot version {__version__}: starting main loop")
         await asyncio.gather(
             modlog.watch_modlog(stop_event),
             post_stream.watch_poststream(stop_event),
