@@ -99,6 +99,12 @@ class Inbox:
                             await self.config.update_rules()
                             await message.mark_read()
 
+                        case "exit":
+                            self.log.info("Received exit command, exiting")
+                            await message.mark_read()
+                            stop_event.set()
+                            break
+
                         case _:
                             self.log.warning("Unknown command: %s", message.subject)
 

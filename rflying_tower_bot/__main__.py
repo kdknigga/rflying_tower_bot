@@ -51,6 +51,7 @@ async def main() -> None:
             post_stream.watch_poststream(stop_event),
             inbox.watch_inbox(stop_event),
         )
+        log.info("Shutting down")
 
 
 try:
