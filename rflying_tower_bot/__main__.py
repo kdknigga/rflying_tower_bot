@@ -15,11 +15,9 @@ from rflying_tower_bot.post_stream import PostStream
 log: logging.Logger = logging.getLogger("rflying_tower_bot")
 
 
-praw_config = PRAWConfig()
-
-
 async def main() -> None:
     """Initialize the bot, grab the rules, and start any event loops."""
+    praw_config = PRAWConfig()
     session = ClientSession(trust_env=True)
     async with asyncpraw.Reddit(
         requestor_kwargs={"session": session},
@@ -54,7 +52,8 @@ async def main() -> None:
         log.info("Shutting down")
 
 
-try:
-    asyncio.run(main())
-except KeyboardInterrupt:
-    pass
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass
