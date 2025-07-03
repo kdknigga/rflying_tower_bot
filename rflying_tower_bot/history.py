@@ -63,12 +63,14 @@ class History:
 
         """
         async_session = async_sessionmaker(self.db, expire_on_commit=False)
+        # pyrefly: ignore  # bad-argument-type
         async with async_session() as session:
             stmt = (
                 select(func.count(HistoryTable.url))
                 .where(HistoryTable.url == url)
                 .where(HistoryTable.action == action)
             )
+            # pyrefly: ignore  # missing-attribute
             n = await session.scalar(stmt)
             if n is not None:
                 return n

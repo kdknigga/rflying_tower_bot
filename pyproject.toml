@@ -21,6 +21,7 @@ ruff = "^0.5.1"
 pytest = "^6.2"
 prospector = {extras = ["with-bandit", "with-mypy"], version = "^1.10.3"}
 types-PyYAML = "^6.0.12.20240311"
+pyrefly = "^0.22.0"
 
 [tool.poetry_bumpversion.file."rflying_tower_bot/__init__.py"]
 
@@ -59,6 +60,9 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
+
+[tool.pyrefly]
+replace-imports-with-any = ["asyncpraw.*"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
