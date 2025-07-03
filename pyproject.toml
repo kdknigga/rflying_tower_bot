@@ -18,10 +18,13 @@ python-logging-discord-handler = "^0.1.5"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"
 ruff = "^0.5.1"
-pytest = "^6.2"
+pytest = ">=8.4.1"
 prospector = {extras = ["with-bandit", "with-mypy"], version = "^1.10.3"}
 types-PyYAML = "^6.0.12.20240311"
 pyrefly = "^0.22.0"
+pytest-cov = "^6.2.1"
+pytest-asyncio = "^1.0.0"
+pytest-mock = "^3.14.1"
 
 [tool.poetry_bumpversion.file."rflying_tower_bot/__init__.py"]
 
