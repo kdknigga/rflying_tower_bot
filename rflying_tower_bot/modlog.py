@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from asyncpraw.models import Submission, Subreddit
+from asyncpraw.models import Comment, Redditor, Submission, Subreddit
 from asyncprawcore.exceptions import RequestException, ServerError
 
 from rflying_tower_bot.config import BotConfig, get_current_removal_reasons
@@ -48,14 +48,14 @@ class ModLog:
         await c.mod.approve()
 
     async def do_action_remove_with_reason(
-        self, post: Submission, reason_title: str | None = None
+        self, post: Comment | Submission, reason_title: str | None = None
     ) -> None:
         """
         Remove a post and maybe send a pre-canned reason to OP.
 
         Args:
         ----
-            post (Submission): The post to remove
+            post (Comment | Submission): The post to remove
             reason_title (Optional[str]): The title of the pre-canned removal reason.  If None, then no reason is used.
 
         """
@@ -83,16 +83,52 @@ class ModLog:
             self.log.info("Removing post: %s", post)
             await post.mod.remove()
 
-    async def do_action_remove(self, post: Submission) -> None:
+    async def do_action_remove(self, post: Comment | Submission) -> None:
         """
         Remove a post without using a pre-canned reason.
 
         Args:
         ----
-            post (Submission): The post to remove
+            post (Comment | Submission): The post to remove
 
         """
         await self.do_action_remove_with_reason(post, reason_title=None)
+
+    async def do_action_ban(self, user: Redditor, reason: str) -> None:
+        """
+        Ban a user with a given reason.
+
+        Args:
+        ----
+            user (Redditor): The user to ban
+            reason (str): The reason for the ban
+
+        """
+        subreddit: Subreddit = await self.config.reddit.subreddit(
+            self.config.subreddit_name
+        )
+        self.log.info("Banning user %s with reason: %s", user.name, reason)
+        await subreddit.banned.add(user.name, reason=reason)
+
+    async def handle_ban_evasion(
+        self, post: Comment | Submission, user: Redditor
+    ) -> None:
+        """
+        Handle ban evasion by removing the post/comment and banning the user.
+
+        Args:
+        ----
+            post (Submission | Comment): The post or comment to remove
+            user (Redditor): The user to ban
+
+        """
+        self.log.warning(
+            "Detected ban evasion by %s on %s, removing and banning",
+            user.name,
+            post.permalink,
+        )
+        await self.do_action_remove(post)
+        await self.do_action_ban(user, "Ban evasion")
 
     async def check_post_flair(self, post: Submission) -> None:
         """
@@ -174,6 +210,26 @@ class ModLog:
                         == f"Page {self.config.rules_wiki_page} edited"
                     ):
                         await self.config.update_rules()
+
+                    if (
+                        modlog_entry.details == "Ban Evasion"
+                        and modlog_entry.mod == "reddit"
+                    ):
+                        if (
+                            not self.config.rules
+                            or not self.config.rules.general_settings.enable_flair_actions
+                        ):
+                            self.log.debug("Handling ban evadors is disabled")
+                        else:
+                            if modlog_entry.target_fullname[:2] == "t1":
+                                post: Comment = await self.config.reddit.comment(
+                                    id=modlog_entry.target_fullname[3:]
+                                )
+                            elif modlog_entry.target_fullname[:2] == "t3":
+                                post: Submission = await self.config.reddit.submission(
+                                    id=modlog_entry.target_fullname[3:]
+                                )
+                            await self.handle_ban_evasion(post=post, user=post.author)
 
             except (RequestException, ServerError) as e:
                 self.log.error("Server error in modlog watcher: %s.  Exiting.", e)

@@ -5,4 +5,4 @@ from rflying_tower_bot import __version__
 
 def test_version():
     """Test the version of the rflying_tower_bot package."""
-    assert __version__ == "0.6.3"
+    assert __version__ == "0.6.4"

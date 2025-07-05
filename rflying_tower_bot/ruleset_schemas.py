@@ -16,6 +16,7 @@ class GeneralSettings(BaseModel):
     enable_flair_actions: bool = True
     enable_create_posterity_comments: bool = True
     enable_inbox_actions: bool = True
+    enable_handle_ban_evasion: bool = True
 
 
 class PosterityCommentSettings(BaseModel):

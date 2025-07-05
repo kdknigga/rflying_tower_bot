@@ -79,6 +79,7 @@ if "discord" in log_handlers:
     import queue
     from logging.handlers import QueueHandler, QueueListener
 
+    # pyrefly: ignore  # import-error
     from discord_logging.handler import DiscordHandler
 
     # Set up log queue
