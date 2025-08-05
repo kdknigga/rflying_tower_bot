@@ -108,7 +108,7 @@ class ModLog:
             self.config.subreddit_name
         )
         self.log.info("Banning user %s with reason: %s", user.name, reason)
-        await subreddit.banned.add(user.name, reason=reason)
+        await subreddit.banned.add(user.name, ban_reason=reason)
 
     async def handle_ban_evasion(
         self, post: Comment | Submission, user: Redditor
