@@ -92,9 +92,12 @@ class History:
         """
         self.log.debug('Inserting url "%s" into history', url)
         async_session = async_sessionmaker(self.db, expire_on_commit=False)
+        # pyrefly: ignore  # bad-argument-type
         async with async_session() as session:
             stmt = insert(HistoryTable).values(
                 url=url, action=action, time=datetime.datetime.now()
             )
+            # pyrefly: ignore  # missing-attribute
             await session.execute(stmt)
+            # pyrefly: ignore  # missing-attribute
             await session.commit()
