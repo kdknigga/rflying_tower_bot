@@ -94,21 +94,24 @@ class ModLog:
         """
         await self.do_action_remove_with_reason(post, reason_title=None)
 
-    async def do_action_ban(self, user: Redditor, reason: str) -> None:
+    async def do_action_ban(
+        self, user: Redditor, reason: str, message: str = ""
+    ) -> None:
         """
         Ban a user with a given reason.
 
         Args:
         ----
             user (Redditor): The user to ban
-            reason (str): The reason for the ban
+            reason (str): The reason for the ban for the modlog
+            message (str): The message to send to the user, if any
 
         """
         subreddit: Subreddit = await self.config.reddit.subreddit(
             self.config.subreddit_name
         )
         self.log.info("Banning user %s with reason: %s", user.name, reason)
-        await subreddit.banned.add(user.name, ban_reason=reason)
+        await subreddit.banned.add(user.name, ban_reason=reason, ban_message=message)
 
     async def handle_ban_evasion(
         self, post: Comment | Submission, user: Redditor
@@ -128,7 +131,7 @@ class ModLog:
             post.permalink,
         )
         await self.do_action_remove(post)
-        await self.do_action_ban(user, "Ban evasion")
+        await self.do_action_ban(user, "Ban evasion", "Ban evasion")
 
     async def check_post_flair(self, post: Submission) -> None:
         """
