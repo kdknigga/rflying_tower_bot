@@ -268,7 +268,7 @@ async def get_current_post_flair(subreddit: Subreddit) -> dict[str, PostFlairSet
 
     """
     return {
-        flair["text"]: PostFlairSettings.parse_obj(flair)
+        flair["text"]: PostFlairSettings.model_validate(flair)
         async for flair in subreddit.flair.link_templates
     }
 
@@ -289,7 +289,7 @@ async def get_current_removal_reasons(
 
     """
     return {
-        reason.title: RemovalReasonSettings.parse_obj(reason.__dict__)
+        reason.title: RemovalReasonSettings.model_validate(reason.__dict__)
         async for reason in subreddit.mod.removal_reasons
     }
 
