@@ -238,7 +238,10 @@ class ModLog:
                                     "Unexpected target type for ban evasion: %s",
                                     modlog_entry.target_fullname,
                                 )
-                            if target_item is not None and target_item.author is not None:
+                            if (
+                                target_item is not None
+                                and target_item.author is not None
+                            ):
                                 await self.handle_ban_evasion(
                                     post=target_item, user=target_item.author
                                 )
