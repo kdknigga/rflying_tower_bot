@@ -224,15 +224,27 @@ class ModLog:
                         ):
                             self.log.debug("Handling ban evadors is disabled")
                         else:
+                            target_item: Comment | Submission | None = None
                             if modlog_entry.target_fullname[:2] == "t1":
-                                post: Comment = await self.config.reddit.comment(
+                                target_item = await self.config.reddit.comment(
                                     id=modlog_entry.target_fullname[3:]
                                 )
                             elif modlog_entry.target_fullname[:2] == "t3":
-                                post: Submission = await self.config.reddit.submission(
+                                target_item = await self.config.reddit.submission(
                                     id=modlog_entry.target_fullname[3:]
                                 )
-                            await self.handle_ban_evasion(post=post, user=post.author)
+                            else:
+                                self.log.warning(
+                                    "Unexpected target type for ban evasion: %s",
+                                    modlog_entry.target_fullname,
+                                )
+                            if (
+                                target_item is not None
+                                and target_item.author is not None
+                            ):
+                                await self.handle_ban_evasion(
+                                    post=target_item, user=target_item.author
+                                )
 
             except (RequestException, ServerError) as e:
                 self.log.error("Server error in modlog watcher: %s.  Exiting.", e)
