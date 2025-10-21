@@ -60,6 +60,8 @@ This is an **async Reddit moderation bot** built with `asyncpraw` that automates
 
 **Version Bumping**: Uses `poetry-bumpversion` to update version in `__init__.py` and test file
 
+**Pre-Commit Validation**: Always run `pre-commit run --all-files` as the final step before completing any changes. Fix all errors reported by ruff, mypy, prospector, and other hooks.
+
 ## Critical Integration Points
 
 **Reddit API** (via `asyncpraw`):
