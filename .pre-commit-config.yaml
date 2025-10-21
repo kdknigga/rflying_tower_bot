@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -25,7 +25,7 @@ repos:
       - id: sync_with_poetry
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    rev: 7.0.0
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
@@ -38,7 +38,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/facebook/pyrefly
-    rev: 0.22.0
+    rev: 0.38.1
     hooks:
       - id: pyrefly-typecheck
 
