@@ -16,3 +16,4 @@ jobs:
       - uses: ./.github/actions/setup_python_env
       - name: Run pre-commit on all files
         run: uv run prek run --all-files
+        shell: bash
