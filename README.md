@@ -3,18 +3,18 @@
 This bot is being developed to maybe help out the mods at https://www.reddit.com/r/flying/ one day.
 
 ## Installation
-### 1. Install `poetry`
-See https://python-poetry.org/docs/ for details.
+### 1. Install `uv`
+See https://docs.astral.sh/uv/getting-started/installation/ for details.
 
 ### 2. Clone git repo
 ```
 $ git clone https://github.com/kdknigga/rflying_tower_bot.git
 ```
 
-### 3. Set up dependancies
+### 3. Set up dependencies
 ```
 $ cd rflying_tower_bot
-$ poetry install
+$ uv sync
 ```
 
 ### 4. Get Reddit script credentials
@@ -49,7 +49,7 @@ See https://www.reddit.com/wiki/wiki/#wiki_how_to_make_a_new_wiki_page for detai
 
 ### 7. Run
 ```
-$ poetry run python -m rflying_tower_bot
+$ uv run python -m rflying_tower_bot
 ```
 
 ## Notes
