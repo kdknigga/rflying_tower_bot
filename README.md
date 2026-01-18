@@ -11,7 +11,7 @@ See https://docs.astral.sh/uv/getting-started/installation/ for details.
 $ git clone https://github.com/kdknigga/rflying_tower_bot.git
 ```
 
-### 3. Set up dependancies
+### 3. Set up dependencies
 ```
 $ cd rflying_tower_bot
 $ uv sync
